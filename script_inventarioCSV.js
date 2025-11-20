@@ -81,6 +81,23 @@ window.onclick = function(event) {
     }
 }
 
+//REVISAR AUTENTICACION
+async function checkAuthAndRedirect() {
+    const messageElement = document.getElementById('message');
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    
+    if (!session) {
+        messageElement.innerHTML = '<i class="fa-solid fa-lock"></i> Debes iniciar sesión para subir datos. Redirigiendo...';
+        // Deshabilitar botones para evitar subida
+        if (uploadButton) uploadButton.disabled = true;
+        if (loadButton) loadButton.disabled = true;
+
+        setTimeout(() => window.location.href = 'index.html', 1500); 
+        return false;
+    }
+    return true;
+}
+
 // MANEJO DE CSV Y TABLA
 const csvFile = document.getElementById('csvFile');
 const loadButton = document.getElementById('loadButton');
@@ -223,6 +240,8 @@ uploadButton.addEventListener('click', function() {
 
 // FUNCIÓN DE SUBIDA (DAR DE ALTA A SUPABASE)
 async function uploadDataToDataBase(csv) {
+    if (!await checkAuthAndRedirect()) return;      //REVISA AUTENTICACION
+
     const separator = ';'; 
     const rows = csv.split('\n').filter(Boolean);
     if (rows.length === 0) return;

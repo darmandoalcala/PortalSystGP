@@ -179,6 +179,18 @@ async function fetchAndRenderFromSupabase() {
     const loadingDiv = document.getElementById('loading');
     loadingDiv.style.display = 'block';
 
+    //Verificar la sesión iniciada
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+        // Si no hay sesión, redirige al login
+        loadingDiv.innerHTML = '<i class="fa-solid fa-lock"></i> Acceso denegado. Redirigiendo...';
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500); 
+        return;
+    }
+
     try {
         const { data, error } = await supabaseClient
             .from('inventario')
@@ -196,7 +208,7 @@ async function fetchAndRenderFromSupabase() {
 
     } catch (error) {
         console.error('Error al leer de Supabase:', error.message);
-        loadingDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error al cargar: ${error.message}`;
+        loadingDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error al cargar: ${error.message}. ¿Estás logueado?`;
     } finally {
         loadingDiv.style.display = 'none';
     }

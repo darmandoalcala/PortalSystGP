@@ -1,10 +1,11 @@
 /* --- Estilos Generales --- */
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f7f6;
     color: #333;
     margin: 0;
-    padding: 20px;
+    padding: 0;
 }
 
 header {
@@ -12,7 +13,6 @@ header {
     margin-bottom: 30px;
     padding: 20px;
     background-color: #ffffff;
-    border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
@@ -23,38 +23,84 @@ h1 {
 }
 
 .menu-container {
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 80vh;
+    gap: 25px;
 }
 
 .menu-option {
-    background-color: #3498db;
-    color: white;
-    padding: 20px 40px;
-    margin: 10px 0;
-    border-radius: 8px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    width: auto; 
+    max-width: 350px;
+    margin-top: 10px;
     text-decoration: none;
-    font-size: 1.5em;
-    width: 300px;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px; 
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.3s;
+}
+
+.menu-container a.menu-option {
+    justify-content: center;
+    background-color: #3498db;
+}
+
+.menu-container a.menu-option:hover {
+    background-color: #2980b9; 
+    transform: translateY(-2px); 
+}
+
+#logout-button {
+    justify-content: center;
+    background-color: #e74c3c;
+    border: none;
+    cursor: pointer;
+}
+
+#logout-button:hover {
+    background-color: #ad3528;
+    transform: translateY(-2px);
+}
+
+.menu-icon-inventario {
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.menu-option .fa-solid {
+    font-size: 100%;
+    margin-right: 8px;
+}
+
+/* --- Estilos de Autenticación --- */
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     text-align: center;
-    transition: background-color 0.3s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
-.menu-option:hover {
-    background-color: #2980b9;
+.auth-container input, .auth-container button {
+    width: 90%;
+    padding: 10px;
+    margin: 8px 0;
+    display: block;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ddd;
 }
-
-.menu-option .menu-icon-inventario {
-    width: 36px;   /* O el tamaño que prefieras (20px, 32px, etc.) */
-    height: 36px;  /* Asegura que sea un cuadrado perfecto */
-    margin-right: 10px; 
-    vertical-align: middle; 
-}
-
+#main-menu { display: none; } 
 
 /* --- Footer --- */
 footer {
