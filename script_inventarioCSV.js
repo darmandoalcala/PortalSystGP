@@ -1,3 +1,7 @@
+const SUPABASE_URL = 'https://oovzygalahromrinjffl.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vdnp5Z2FsYWhyb21yaW5qZmZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2MzQwMzgsImV4cCI6MjA3OTIxMDAzOH0.crTTU0mxDvGJ2n2_MrQ43BTSBseYRbh7P5Prh5T98Wg';
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const BRAND_IMAGES = {
     'LENOVO': 'img/lenovo_logo.png', 
@@ -80,6 +84,7 @@ window.onclick = function(event) {
 // MANEJO DE CSV Y TABLA
 const csvFile = document.getElementById('csvFile');
 const loadButton = document.getElementById('loadButton');
+const uploadButton = document.getElementById('uploadButton');
 let fileContent = null; 
 
 // HABILITA EL BOTON AL SELECCIONAR UN CSV
@@ -90,11 +95,13 @@ csvFile.addEventListener('change', function(e) {
         reader.onload = function(evt) {
             fileContent = evt.target.result; 
             loadButton.disabled = false; 
+            uploadButton.disabled = false;
         };
         reader.readAsText(file, 'UTF-8');
     } else {
         fileContent = null;
         loadButton.disabled = true;
+        uploadButton.disabled = true;
     }
 });
 
@@ -134,7 +141,8 @@ function renderTable(csv) {
     const funcionaIndex = headers.indexOf('FUNCIONA');
     const detallesIndex = headers.indexOf('DETALLES');
     const activoIndex = headers.indexOf('ACTIVO');
-    const marcaIndex = headers.indexOf('MARCA'); 
+    const marcaIndex = headers.indexOf('MARCA');
+    const serieIndex = headers.indexOf('NUMERO DE SERIE')
 
     if (funcionaIndex === -1 || detallesIndex === -1 || activoIndex === -1 || marcaIndex === -1) {
         console.error("Faltan columnas clave para el formato condicional o la marca.");
@@ -144,6 +152,13 @@ function renderTable(csv) {
     // FILAS DE DATOS
     dataRows.forEach(rowData => {
         const cells = rowData.split(separator).map(c => c.trim());
+        const numeroDeSerie = cells[serieIndex];
+        
+        // Si la columna NUMERO DE SERIE está vacia...
+        if (!numeroDeSerie) {
+            return;//salta esa columna
+        }
+
         let bodyRow = document.createElement('tr');
         
         bodyRow.dataset.rowData = JSON.stringify(cells); 
@@ -160,9 +175,6 @@ function renderTable(csv) {
             if (index === marcaIndex) {
                 const brand = cellData.toUpperCase();
                 const imagePath = BRAND_IMAGES[brand] || BRAND_IMAGES['DEFAULT'];
-                
-                // Muestra la imagen antes del nombre de la marca
-                displayData = `<img src="${imagePath}" class="brand-icon" alt="${cellData}"> ${cellData}`;
             }
 
             // FUNCIONA
@@ -185,10 +197,10 @@ function renderTable(csv) {
             // ACTIVO
             if (index === activoIndex) {
                 const value = cellData.toUpperCase();
-                if (value === 'SI') {               //ICONO PARA "SI"
-                    displayData = '<i class="fa-solid fa-circle-check activo-si-icon"></i> SI';
-                } else if (value === 'NO') {        //ICONO PARA "NO"
-                    displayData = '<i class="fa-solid fa-circle-xmark activo-no-icon"></i> NO';
+                if (value === '1') {               //ICONO PARA "SI"
+                    displayData = '<i class="fa-solid fa-circle-check activo-si-icon"></i>';
+                } else if (value === '0') {        //ICONO PARA "NO"
+                    displayData = '<i class="fa-solid fa-circle-xmark activo-no-icon"></i>';
                 }
             }
 
@@ -200,4 +212,86 @@ function renderTable(csv) {
         
         tbody.appendChild(bodyRow);
     });
+}
+
+//AL PRESIONAR SUBIR LA TABLA A BASE DE DATOS
+uploadButton.addEventListener('click', function() {
+    if(fileContent){
+        uploadDataToDataBase(fileContent);
+    }
+})
+
+// FUNCIÓN DE SUBIDA (DAR DE ALTA A SUPABASE)
+async function uploadDataToDataBase(csv) {
+    const separator = ';'; 
+    const rows = csv.split('\n').filter(Boolean);
+    if (rows.length === 0) return;
+
+    const headers = rows[0].split(separator).map(h => h.trim());
+    const dataRows = rows.slice(1);
+    const dataToInsert = [];
+
+    // 1. Procesamiento y Mapeo de Datos (CSV a Objeto)
+    dataRows.forEach(rowData => {
+        const cells = rowData.split(separator).map(c => c.trim());
+        let rowObject = {};
+
+        cells.forEach((cellData, index) => {
+            const headerName = headers[index];
+            let value = cellData;
+
+            //IGNORAR la columna ID si existe, ya que es autoincremental en la DB 
+            // Verificamos si el nombre de la cabecera es 'ID'....
+            if (headerName.toUpperCase() === 'ID') {
+                return; // No se incluye esta columna en el rowObject
+            }
+
+            //ACTIVO (1 y 0 a boolean)
+            if (headerName.toUpperCase() === 'ACTIVO') {
+                value = cellData === '1'; 
+            }
+            
+            //FECHA REVISADO (DD/MM/AAAA a AAAA-MM-DD)
+            if (headerName === 'FECHA REVISADO' && value && value.includes('/')) {
+                const parts = value.split('/');
+                value = `${parts[2]}-${parts[1]}-${parts[0]}`; 
+            }
+
+            // Si el valor es una cadena vacía, lo convertimos a null para la DB
+            rowObject[headerName] = value === '' ? null : value;
+        });
+
+        // FILTRADO DE SEGURIDAD (Solo insertamos si el campo clave existe)
+        if (rowObject["NUMERO DE SERIE"] !== null) {
+            dataToInsert.push(rowObject);
+        }
+    });
+    
+    // 2. Subir los datos a Supabase
+    try {
+        const uploadButton = document.getElementById('uploadButton'); 
+        if (uploadButton) {
+            uploadButton.disabled = true; 
+            uploadButton.textContent = 'Subiendo...';
+        }
+
+        const { error } = await supabaseClient
+            .from('inventario')
+            .upsert(dataToInsert, {
+                onConflict: 'NUMERO DE SERIE'
+            });
+
+        if (error) throw error;
+
+        alert(`✅ Datos de ${dataToInsert.length} equipos dados de alta/actualizados con éxito en la base de datos!`);
+        
+    } catch (error) {
+        console.error('Error al subir a Supabase:', error.message);
+        alert('❌ Error al subir los datos: ' + error.message);
+    } finally {
+        if (uploadButton) {
+            uploadButton.disabled = false;
+            uploadButton.textContent = 'Subir CSV a Base de Datos';
+        }
+    }
 }

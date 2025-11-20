@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario General - Vista Moderna</title>
+    
+    <link rel="stylesheet" href="style_inventarioCSV.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        .loading-message {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5em;
+            color: #7f8c8d;
+        }
+
+        .table-container {
+            margin: 20px auto;
+            max-width: 95%; 
+        }
+
+        #inventoryTable tbody tr:hover {
+            background-color: #d8f5e6; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            transform: scale(1.005);
+            transition: all 0.2s ease;
+        }
+        
+        /* Estilos básicos para el Modal (debe estar en style_inventarioCSV.css o aquí si es necesario) */
+        .modal {
+            display: none; /* Oculto por defecto */
+            position: fixed; 
+            z-index: 100; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.4); 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Inventario de Equipos 📊</h1>
+        <p>Vista de solo lectura y en tiempo real de la base de datos.</p>
+    </header>
+
+    <main>
+        <div class="table-container">
+            <div id="loading" class="loading-message">
+                <i class="fa-solid fa-spinner fa-spin"></i> Cargando datos del inventario...
+            </div>
+            <table id="inventoryTable">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </main>
+    
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span> 
+
+            <h2 id="modal-title"></h2>
+            <p id="modal-subtitle" class="subtitle"></p>
+            
+            <div id="modal-image-container" class="image-container">
+                </div>
+
+            <h3>Detalles del Equipo</h3>
+            <ul>
+                <li><strong>Usuario:</strong> <span id="modal-user"></span></li>
+                <li><strong>Departamento/Ubicación:</strong> <span id="modal-dpto"></span></li>
+                <li><strong>Estado:</strong> <span id="modal-funciona"></span></li>
+            </ul>
+
+            <h3>Registro de Inventario</h3>
+            <ul>
+                <li><strong>Fecha Revisado:</strong> <span id="modal-date"></span></li>
+                <li><strong>Tiempo Transcurrido:</strong> <span id="modal-days-ago"></span></li>
+            </ul>
+
+            <h3>Notas/Detalles Adicionales</h3>
+            <p id="modal-details-content"></p>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Datos sincronizados con Supabase.</p>
+    </footer>
+
+    <script src="script_vista_inventario.js"></script>
+    
+</body>
+</html>

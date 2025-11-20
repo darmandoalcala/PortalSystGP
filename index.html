@@ -3,68 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV a Tabla - Formato condicional para inventario</title>
+    <title>Menú Principal - Herramientas de Gestión</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
     <header>
-        <h1>Visualizador CSV</h1>
-        <p>Selecciona un archivo CSV y luego haz clic en "Cargar Tabla". Haz clic en cualquier fila para ver los detalles.</p>
+        <h1>Bienvenido al Portal de Gestión</h1>
+        <p>Selecciona una herramienta para comenzar.</p>
     </header>
 
-    <main>
-        <section class="csv-upload">
-            <input type="file" id="csvFile" accept=".csv">
-            <button id="loadButton" disabled>Cargar Tabla</button>
-        </section>
+    <main class="menu-container">
+        
+        <a href="inventarioCSV.html" class="menu-option">
+            <i class="fa-solid fa-list-check"></i> Gestión de Inventario (CSV/Tabla)
+        </a>
 
-        <section class="table-container">
-            <table id="inventoryTable">
-                <thead></thead>
-                <tbody></tbody>
-            </table>
-        </section>
+        <a href="vista_inventario.html" class="menu-option">
+            <i class="fa-solid fa-eye"></i> Visualizar Inventario
+        </a>
+
+        <a href="#" class="menu-option" style="background-color: #7f8c8d; cursor: default;">
+            <i class="fa-solid fa-chart-line"></i> Reportes (Próximamente)
+        </a>
+        
     </main>
-    
-    <div id="itemModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <div id="modal-details">
-                <div id="modal-image-container"></div>
-                
-                <h2 id="modal-title"></h2>
-                <h3 id="modal-subtitle"></h3>
-                <div class="modal-body">
-                    <p>
-                        <i class="fa-solid fa-user"></i> Pertenece a: 
-                        <strong id="modal-user"></strong>
-                        del departamento 
-                        <strong id="modal-dpto"></strong>.
-                    </p>
-                    <p>
-                        <i class="fa-solid fa-calendar-check"></i> Fecha de Revisión: 
-                        <strong id="modal-date"></strong>
-                    </p>
-                    <p>
-                        <i class="fa-solid fa-clock-rotate-left"></i> Inventariado hace: 
-                        <strong id="modal-days-ago"></strong>
-                    </p>
-                    <hr>
-                    <h4><i class="fa-solid fa-circle-info"></i> Detalles del Estado</h4>
-                    <p>
-                        Función: <strong id="modal-funciona"></strong>
-                    </p>
-                    <div id="modal-details-content"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <footer>
-        <p>Herramienta de visualización de datos con formato condicional.</p>
+        <p>By @darmandoalcala   DataBase powered by Supabase.</p>
     </footer>
 
-    <script src="script.js"></script>
 </body>
 </html>
