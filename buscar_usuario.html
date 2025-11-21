@@ -3,50 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario General - Vista Moderna</title>
-    
-    <link rel="stylesheet" href="styles/style_inventarioCSV.css">
+    <title>Buscar Equipo por Usuario</title>
+    <link rel="stylesheet" href="styles/style_buscar_usuario.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <style>
-        .loading-message {
-            text-align: center;
-            padding: 50px;
-            font-size: 1.5em;
-            color: #7f8c8d;
-        }
-
-        .table-container {
-            margin: 20px auto;
-            max-width: 95%; 
-        }
-
-        #inventoryTable tbody tr:hover {
-            background-color: #d8f5e6; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            transform: scale(1.005);
-            transition: all 0.2s ease;
-        }
-    </style>
 </head>
 <body>
 
     <header>
-        <h1>Inventario de Equipos</h1>
-        <p>Vista de solo lectura y en tiempo real de la base de datos.</p>
+        <h1>Búsqueda de Equipos por Usuario/Departamento 🔍</h1>
+        <p>Introduce el nombre del usuario o departamento para ver sus equipos asignados.</p>
     </header>
 
     <main>
-        <div class="table-container">
-            <div id="loading" class="loading-message">
-                <i class="fa-solid fa-spinner fa-spin"></i> Cargando datos del inventario...
+        <section id="search-input-area">
+            <input type="text" id="searchInput" placeholder="Nombre de Usuario o Departamento" aria-label="Campo de búsqueda de usuario">
+            <button id="searchButton">Buscar Equipos</button>
+        </section>
+
+        <section id="results-display">
+            <h2>Resultados de la Búsqueda</h2>
+            
+            <div id="loadingMessage">
+                Introduce un término y haz clic en Buscar.
             </div>
-            <table id="inventoryTable">
-                <thead></thead>
-                <tbody></tbody>
+
+            <table id="inventoryTable" class="simple-results">
+                <thead>
+                    <tr>
+                        <th>Nombre del Usuario</th>
+                        <th>Ubicación / Departamento</th>
+                        <th>Número de Serie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
             </table>
-        </div>
+        </section>
     </main>
     
     <div id="itemModal" class="modal">
@@ -90,12 +85,11 @@
             </div>
         </div>
     </div>
-    
     <footer>
-        <p>Datos sincronizados con Supabase.</p>
+        <p>Herramienta de Búsqueda de Inventario.</p>
     </footer>
 
-    <script src="scripts/script_vista_inventario.js"></script>
-    
+    <script src="scripts/script_buscar_usuario.js"></script>
+
 </body>
 </html>

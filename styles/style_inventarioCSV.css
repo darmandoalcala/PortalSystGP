@@ -255,6 +255,23 @@ footer {
     white-space: pre-wrap; /* Respeta saltos de línea y espacios en detalles */
 }
 
+/* --- ESTILOS PARA IMAGEN EN EL MODAL --- */
+#modal-image-container {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+.modal-device-image {
+    max-width: 100%;
+    max-height: 180px; /* Tamaño máximo para la imagen del modal */
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 /* --- Filas Clicables --- */
 
 /* Hace que las filas se vean clicables */
@@ -275,21 +292,4 @@ footer {
     vertical-align: middle;
     border-radius: 3px;
     border: 1px solid #eee;
-}
-
-/* --- ESTILOS PARA IMAGEN EN EL MODAL --- */
-#modal-image-container {
-    text-align: center;
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: #f8f8f8;
-    border-radius: 8px;
-}
-
-.modal-device-image {
-    max-width: 100%;
-    max-height: 180px; /* Tamaño máximo para la imagen del modal */
-    object-fit: contain;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }

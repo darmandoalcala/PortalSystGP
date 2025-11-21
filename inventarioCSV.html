@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV a Tabla - Formato condicional para inventario</title>
-    <link rel="stylesheet" href="style_inventarioCSV.css">
+    <link rel="stylesheet" href="styles/style_inventarioCSV.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
 
@@ -49,6 +50,14 @@
                         <strong id="modal-dpto"></strong>.
                     </p>
                     <p>
+                        <i class="fa-solid fa-calendar-check"></i> Fecha de Compra: 
+                        <strong id="modal-buy-date"></strong>
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-clock-rotate-left"></i> Comprado hace: 
+                        <strong id="modal-buy-days-ago"></strong>
+                    </p>
+                    <p>
                         <i class="fa-solid fa-calendar-check"></i> Fecha de Revisión: 
                         <strong id="modal-date"></strong>
                     </p>
@@ -59,7 +68,7 @@
                     <hr>
                     <h4><i class="fa-solid fa-circle-info"></i> Detalles del Estado</h4>
                     <p>
-                        Función: <strong id="modal-funciona"></strong>
+                        Funciona: <strong id="modal-funciona"></strong>
                     </p>
                     <div id="modal-details-content"></div>
                 </div>
@@ -70,6 +79,6 @@
         <p>By @darmandoalcala   DataBase powered by Supabase.</p>
     </footer>
 
-    <script src="script_inventarioCSV.js"></script>
+    <script src="scripts/script_inventarioCSV.js"></script>
 </body>
 </html>

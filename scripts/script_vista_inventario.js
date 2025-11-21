@@ -13,18 +13,14 @@ const BRAND_IMAGES = {
     'DEFAULT': 'img/default_logo.png'
 };
 
-//FECHAS IMPORTANTE: admitir formato de sql 
 function calculateDaysAgo(isoDateString) {
-    if (!isoDateString || typeof isoDateString !== 'string') return 'Fecha inválida';
+    if (!isoDateString || typeof isoDateString !== 'string') return 'Sin Registro';
 
-    // Crear la fecha directamente del formato YYYY-MM-DD de Supabase
     const reviewDate = new Date(isoDateString);
     
-    // Verificar si la fecha es válida. Esto falla si el string no es ISO
     if (isNaN(reviewDate.getTime())) return 'Fecha inválida'; 
 
     const today = new Date();
-    // Resetear horas para cálculo exacto de días
     reviewDate.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
 
@@ -33,66 +29,58 @@ function calculateDaysAgo(isoDateString) {
     
     if (daysDiff === 0) return 'Hoy';
     if (daysDiff === 1) return '1 día';
-    if (daysDiff < 0) return 'Futuro'; // En caso de error
+    if (daysDiff < 0) return 'Futuro';
     return `${daysDiff} días`;
 }
 
-//MoDAL: Recibe un OBJETO -> rowObject
 const modal = document.getElementById('itemModal');
 const closeButton = document.querySelector('.close-button');
 
-function showModal(item) { // item es un objeto { ID: 1, MARCA: 'HP', ... }
-    // Asignación directa por nombre de propiedad
-    const brand = item.MARCA ? item.MARCA.toUpperCase() : 'DEFAULT';
+function showModal(data) {
+    const brand = data.MARCA.toUpperCase();
     const imagePath = BRAND_IMAGES[brand] || BRAND_IMAGES['DEFAULT'];
     
-    // Poblar contenedor de imagen
     const modalImageContainer = document.getElementById('modal-image-container');
-    modalImageContainer.innerHTML = `<img src="${imagePath}" alt="${item.MARCA || ''} ${item.MODELO || ''}" class="modal-device-image">`;
+    modalImageContainer.innerHTML = `<img src="${imagePath}" alt="${data.MARCA} ${data.MODELO}" class="modal-device-image">`;
 
-    // Título y Subtítulo
-    document.getElementById('modal-title').textContent = `${item.MARCA || ''} ${item.MODELO || ''} (${item.DISPOSITIVO || ''})`; // MARCA MODELO (DISP)
-    document.getElementById('modal-subtitle').textContent = `S/N: ${item['NUMERO DE SERIE'] || ''}`; // NUMERO DE SERIE
+    document.getElementById('modal-title').textContent = `${data.MARCA} ${data.MODELO} (${data.DISP})`;
+    document.getElementById('modal-subtitle').textContent = `S/N: ${data['NUMERO DE SERIE']}`;
     
-    // Cuerpo
-    document.getElementById('modal-user').textContent = item.USUARIO || 'N/A';
-    document.getElementById('modal-dpto').textContent = item.DEPARTAMENTO || 'N/A';
+    document.getElementById('modal-user').textContent = data.USUARIO || 'N/A';
+    document.getElementById('modal-dpto').textContent = data['LUGAR_DPTO'] || 'N/A';
     
-    // Usamos el formato ISO de Supabase (item.FECHA_REVISADO) para mostrarlo
-    document.getElementById('modal-date').textContent = item.FECHA_REVISADO || 'N/A'; 
-    // Usamos el formato ISO de Supabase para el cálculo
-    document.getElementById('modal-days-ago').textContent = calculateDaysAgo(item.FECHA_REVISADO); 
+    // --- FECHA REVISADO ---
+    const fechaRevisado = data['FECHA REVISADO'];
+    document.getElementById('modal-date').textContent = fechaRevisado || 'Desconocido';
+    document.getElementById('modal-days-ago').textContent = calculateDaysAgo(fechaRevisado);
+    
+    // --- FECHA COMPRA ---
+    const fechaCompra = data['FECHA COMPRA'];
+    document.getElementById('modal-buy-date').textContent = fechaCompra || 'Desconocido'; 
+    document.getElementById('modal-buy-days-ago').textContent = calculateDaysAgo(fechaCompra);
 
-    // Detalles del estado
-    document.getElementById('modal-funciona').textContent = item.FUNCIONA || 'N/A';
-    document.getElementById('modal-details-content').textContent = item.DETALLES || 'Sin detalles';
-    
+    document.getElementById('modal-funciona').textContent = data.FUNCIONA || 'N/A';
+    document.getElementById('modal-details-content').textContent = data.DETALLES || 'Sin detalles';
+
     modal.style.display = 'block';
 }
 
-// CERRAR MODAL 
 closeButton.onclick = function() {
     modal.style.display = 'none';
 }
-//Cerrar modal 
+
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = 'none';
     }
 }
 
-// 3. FUNCIÓN DE RENDERIZADO DE OBJETOS DE SUPABASE
-
-/**
- * Renderiza la tabla a partir de un array de objetos (la respuesta de Supabase).
- * @param {Array<Object>} data - Array de objetos devuelto por Supabase.
- */
 function renderTableFromObjects(data) {
     console.log("¡Renderizando la tabla! Número de filas:", data.length);
     if (data.length === 0) return;
 
-    // Obtener las claves (headers) del primer objeto
-    const headers = Object.keys(data[0]); 
+    const allHeaders = Object.keys(data[0]); 
+    const excludedHeaders = ['id', 'created_at'];
 
     const table = document.getElementById('inventoryTable');
     const thead = table.querySelector('thead');
@@ -101,44 +89,44 @@ function renderTableFromObjects(data) {
     thead.innerHTML = '';
     tbody.innerHTML = '';
 
-    // CABECERA
     let headerRow = '<tr>';
-    headers.forEach(header => {
-        headerRow += `<th>${header}</th>`;
+    allHeaders.forEach(header => {
+        if (!excludedHeaders.includes(header)) {
+            headerRow += `<th>${header.replace('_', ' ')}</th>`;
+        }
     });
     headerRow += '</tr>';
     thead.innerHTML = headerRow;
 
-    // FILAS DE DATOS
-    data.forEach(item => { // item es el objeto de Supabase
+    data.forEach(item => {
         
-        // Comprobación defensiva del Serial Number
         const numeroDeSerie = item['NUMERO DE SERIE'];
         if (!numeroDeSerie) {
-            return; // salta la fila si no tiene número de serie
+            return; 
         }
 
         let bodyRow = document.createElement('tr');
         
-        // Al hacer click, pasamos el OBJETO COMPLETO
         bodyRow.addEventListener('click', () => {
             showModal(item); 
         });
 
-        headers.forEach(key => { 
+        allHeaders.forEach(key => { 
+            if (excludedHeaders.includes(key)) return;
+            
             const cellData = item[key] || ''; 
             let className = '';
             let displayData = cellData;
 
-            // IMAGEN MINIATURA (Opcional: Podrías poner un ícono)
             if (key === 'MARCA') {
-                const brand = cellData.toUpperCase();
+                const brand = String(cellData).toUpperCase();
                 const imagePath = BRAND_IMAGES[brand] || BRAND_IMAGES['DEFAULT'];
+                
+                displayData = `<img src="${imagePath}" class="brand-icon" alt="${cellData}"> ${cellData}`;
             }
 
-            // FUNCIONA
             if (key === 'FUNCIONA') {
-                const value = cellData.toUpperCase();
+                const value = String(cellData).toUpperCase();
                 if (value === 'SI') {
                     className = 'funciona-si';
                 } else if (value === 'DETALLE') {
@@ -148,18 +136,36 @@ function renderTableFromObjects(data) {
                 }
             }
 
-            // DETALLES
-            if (key === 'DETALLES' && cellData.length > 0) {
+            if (key === 'DETALLES' && String(cellData).length > 0) {
                 className += ' detalles-presente';
             }
 
-            // ACTIVO (asumo que es un booleano o 1/0 en Supabase)
             if (key === 'ACTIVO') {
                 const value = String(cellData).toUpperCase();
-                if (value === '1' || value === 'TRUE') { 
+                if (value === 'TRUE') { 
                     displayData = '<i class="fa-solid fa-circle-check activo-si-icon"></i>';
-                } else if (value === '0' || value === 'FALSE') {
+                } else if (value === 'FALSE') {
                     displayData = '<i class="fa-solid fa-circle-xmark activo-no-icon"></i>';
+                }
+            }
+            
+            if (key === 'FECHA COMPRA') {
+                // Formatear la fecha para visualización si no está vacía
+                if (cellData) {
+                    const parts = cellData.split('-'); // YYYY-MM-DD
+                    displayData = `${parts[2]}/${parts[1]}/${parts[0]}`; // DD/MM/YYYY
+                } else {
+                    displayData = '';
+                }
+            }
+            
+            if (key === 'FECHA REVISADO') {
+                // Formatear la fecha para visualización si no está vacía
+                if (cellData) {
+                    const parts = cellData.split('-'); // YYYY-MM-DD
+                    displayData = `${parts[2]}/${parts[1]}/${parts[0]}`; // DD/MM/YYYY
+                } else {
+                    displayData = '';
                 }
             }
 
@@ -173,17 +179,13 @@ function renderTableFromObjects(data) {
     });
 }
 
-
-// FUNCIÓN PRINCIPAL: LEER DE SUPABASE AL CARGAR
 async function fetchAndRenderFromSupabase() {
     const loadingDiv = document.getElementById('loading');
     loadingDiv.style.display = 'block';
 
-    //Verificar la sesión iniciada
     const { data: { session } } = await supabaseClient.auth.getSession();
 
     if (!session) {
-        // Si no hay sesión, redirige al login
         loadingDiv.innerHTML = '<i class="fa-solid fa-lock"></i> Acceso denegado. Redirigiendo...';
         setTimeout(() => {
             window.location.href = 'index.html';
@@ -193,9 +195,9 @@ async function fetchAndRenderFromSupabase() {
 
     try {
         const { data, error } = await supabaseClient
-            .from('inventario')
-            .select('*') 
-            .order('MARCA', { ascending: true }); 
+            .from('inventario')                             //DE TABLA "inventario"
+            .select('*')                                    //SELECCIONAR * (TODO)
+            .order('ID', { ascending: true });              //Y ORDENAR POR "ID", ASCENDENTE
 
         if (error) throw error;
         
@@ -203,7 +205,7 @@ async function fetchAndRenderFromSupabase() {
             loadingDiv.innerHTML = '<i class="fa-solid fa-face-frown"></i> No hay datos en el inventario.';
             return;
         }
-        //Llamada a render
+
         renderTableFromObjects(data); 
 
     } catch (error) {
@@ -214,6 +216,4 @@ async function fetchAndRenderFromSupabase() {
     }
 }
 
-// INICIO AUTOMÁTICO AL CARGAR LA PÁGINA
 window.onload = fetchAndRenderFromSupabase;
-
