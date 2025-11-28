@@ -197,7 +197,7 @@ async function fetchAndRenderFromSupabase() {
         const { data, error } = await supabaseClient
             .from('inventario')                             //DE TABLA "inventario"
             .select('*')                                    //SELECCIONAR * (TODO)
-            .order('ID', { ascending: true });              //Y ORDENAR POR "ID", ASCENDENTE
+            .order('id', { ascending: true });              //Y ORDENAR POR "ID", ASCENDENTE
 
         if (error) throw error;
         

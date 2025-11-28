@@ -10,56 +10,88 @@
 </head>
 <body>
 
-    <header>
-        <h1>PORTAL DE GESTIÓN</h1>
-        <p>INICIA SESIÓN PARA ACCEDER A LAS HERRAMIENTAS.</p>
-    </header>
-
-    <main>
-        <div id="login-section" class="auth-container">
-            <h2>INICIO DE SESIÓN</h2>
-            <form id="login-form">
-                <input type="email" id="email" placeholder="CORREO ELECTRONICO" required>
-                <input type="password" id="password" placeholder="CONTRASEÑA" required>
-                <button type="submit">ACCEDER</button>
-                <p id="auth-error" style="color: red;"></p>
-            </form>
-        </div>
-
-        <div id="main-menu" class="menu-container">
-            <p>BIENVENIDO, SELECCIONE UNA HERRAMIENTA:</p>
-
-            <a href="agregar_equipo.html" class="menu-option">
-                <img src="img/computer.png" alt="Agregar un Equipo" class="menu-icon-inventario"/>
-                AGREGAR UN EQUIPO
-            </a>
-            
-            <a href="inventarioCSV.html" class="menu-option">
-                <img src="img/excel.png" alt="Subir Inventario CSV" class="menu-icon-inventario"/>
-                SUBIR INVENTARIO EN CSV
-            </a>
-
-            <a href="buscar_usuario.html" class="menu-option">
-                <img src="img/people.png" alt="Buscar Usuario" class="menu-icon-inventario"/>
-                BUSCAR USUARIO &  DEPARTAMENTO
-            </a>
-
-            <a href="vista_inventario.html" class="menu-option">
-                <img src="img/database.png" alt="Visualizar Inventario" class="menu-icon-inventario"/>
-                VISUALIZAR INVENTARIO
-            </a>
-
-            <button id="logout-button" class="menu-option" style="background-color: #e74c3c; color: white;">
-                <i class="fa-solid fa-right-from-bracket"></i> 
-                CERRAR SESIÓN
-            </button>
-        </div>
-    </main>
     
-    <footer>
-        <p>BY @DARMANDOALCALA. DATABASE POWERED BY SUPABASE</p>
-    </footer>
+    
+    <div class="parent">
+        <header id="div1">
+            <h1>PORTAL DE GESTIÓN</h1>
+            <p>INICIA SESIÓN PARA ACCEDER A LAS HERRAMIENTAS.</p>
+        </header>
+        <div id="div2" class="stat-item">
+            <span class="stat-value">36</span>
+            <span class="stat-description">Equipos Registrados</span>
+        </div>
+        <div id="div3" class="stat-item">
+            <span class="stat-value">31</span>
+            <span class="stat-description">Laptops</span>
+        </div>
+        <div id="div4" class="stat-item">
+            <span class="stat-value">4</span>
+            <span class="stat-description">Monitores</span>
+        </div>
+        <div id="div5">
+            <div id="login-section" class="auth-container">
+                <h2>INICIO DE SESIÓN</h2>
+                <form id="login-form">
+                    <input type="email" id="email" placeholder="CORREO ELECTRONICO" required>
+                    <input type="password" id="password" placeholder="CONTRASEÑA" required>
+                    <button type="submit">ACCEDER</button>
+                    <p id="auth-error" style="color: red;"></p>
+                </form>
+            </div>
 
-    <script src="scripts/script_auth.js"></script> 
+            <div id="main-menu" class="menu-container">
+                <p>BIENVENIDO, SELECCIONE UNA HERRAMIENTA:</p>
+
+                <a href="agregar_equipo.html" class="menu-option">
+                    <img src="img/computer.png" alt="Agregar un Equipo" class="menu-icon-inventario"/>
+                    AGREGAR UN EQUIPO
+                </a>
+                
+                
+                <a href="buscar_equipo.html" class="menu-option">
+                    <img src="img/people.png" alt="Buscar Usuario" class="menu-icon-inventario"/>
+                    BUSCAR EQUIPO
+                </a>
+                
+                <a href="vista_inventario.html" class="menu-option">
+                    <img src="img/database.png" alt="Visualizar Inventario" class="menu-icon-inventario"/>
+                    VER INVENTARIO
+                </a>
+
+                <a href="importar_csv.html" class="menu-option">
+                    <img src="img/excel.png" alt="Importar CSV" class="menu-icon-inventario"/>
+                    IMPORTAR CSV
+                </a>
+                <a href="exportar_csv.html" class="menu-option">
+                    <img src="img/excel.png" alt="Exportar CSV" class="menu-icon-inventario"/>
+                    EXPORTAR CSV
+                </a>
+
+                <button id="logout-button" class="menu-option" style="background-color: #e74c3c; color: white;">
+                    <i class="fa-solid fa-right-from-bracket"></i> 
+                    CERRAR SESIÓN
+                </button>
+            </div>
+        </div>
+        
+        <div id="div6" class="stat-item">
+            <span class="stat-value">GP-GALERIOAS</span>
+            <span class="stat-description">Es la sucursal con más equipos</span>
+        </div>
+        <div id="div7" class="stat-item">
+            <span class="stat-value">7</span>
+            <span class="stat-description">Detalles por revisar</span>
+        </div>
+        <div id="div8" class="stat-item">
+            <span class="stat-value">8</span>
+            <span class="stat-description">Equipos inactivos</span>
+        </div>
+        <footer id="div9">
+            <p>BY @DARMANDOALCALA. DATABASE POWERED BY SUPABASE</p>
+        </footer>
+    </div>
+    <script src="scripts/script_auth.js"></script>
+
 </body>
 </html>

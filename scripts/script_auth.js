@@ -1,7 +1,4 @@
-// script_auth.js
-
 const SUPABASE_URL = 'https://oovzygalahromrinjffl.supabase.co'; 
-// La clave ANÓNIMA solo sirve para iniciar sesión, no para leer datos si RLS está activo.
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vdnp5Z2FsYWhyb21yaW5qZmZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2MzQwMzgsImV4cCI6MjA3OTIxMDAzOH0.crTTU0mxDvGJ2n2_MrQ43BTSBseYRbh7P5Prh5T98Wg';
 
 const { createClient } = supabase;
@@ -13,11 +10,6 @@ const loginSection = document.getElementById('login-section');
 const mainMenu = document.getElementById('main-menu');
 const authError = document.getElementById('auth-error');
 
-// =========================================================
-// FUNCIÓN PARA CAMBIAR LA VISTA
-// =========================================================
-
-/** Muestra u oculta las secciones según el estado de la sesión */
 function handleAuthStatus(session) {
     if (session) {
         // Usuario logueado
