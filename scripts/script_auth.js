@@ -3,50 +3,145 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const TABLA_INVENTARIO = 'inventario';
 
 const loginForm = document.getElementById('login-form');
 const logoutButton = document.getElementById('logout-button');
 const loginSection = document.getElementById('login-section');
 const mainMenu = document.getElementById('main-menu');
-const div1 = document.getElementById('div1');
-const div2 = document.getElementById('div2');
-const div3 = document.getElementById('div3');
-const div4 = document.getElementById('div4');
-const div6 = document.getElementById('div6');
-const div7 = document.getElementById('div7');
-const div8 = document.getElementById('div8');
-
 const authError = document.getElementById('auth-error');
 
-function handleAuthStatus(session) {
-    if (session) {
-        // Usuario logueado
-        loginSection.style.display = 'none';
-        mainMenu.style.display = 'block';
-        //div1.style.display = 'block';
-        div2.style.display = 'block';
-        div3.style.display = 'block';
-        div4.style.display = 'block';
-        div6.style.display = 'block';
-        div7.style.display = 'block';
-        div8.style.display = 'block';
-        
-    } else {
-        // Usuario deslogueado
-        loginSection.style.display = 'block';
-        mainMenu.style.display = 'none';
-        //div1.style.display = 'none';
-        div2.style.display = 'none';
-        div3.style.display = 'none';
-        div4.style.display = 'none';
-        div6.style.display = 'none';
-        div7.style.display = 'none';
-        div8.style.display = 'none';
+const statDivs = {
+    totalEquipos: document.getElementById('div2'),
+    laptops: document.getElementById('div3'),
+    monitores: document.getElementById('div4'),
+    sucursalMax: document.getElementById('div6'),
+    detallesRevisar: document.getElementById('div7'),
+    inactivos: document.getElementById('div8')
+};
 
+function updateStatDiv(divElement, value, description) {
+    if (divElement) {
+        const valueSpan = divElement.querySelector('.stat-value');
+        const descSpan = divElement.querySelector('.stat-description');
+        
+        if (valueSpan) valueSpan.textContent = value;
+        if (descSpan) descSpan.textContent = description;
     }
 }
 
-// INICIO DE SESIÓN
+async function loadDashboardStats() {
+    
+    for (const key in statDivs) {
+        if (statDivs[key]) {
+            statDivs[key].querySelector('.stat-value').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        }
+    }
+
+    try {
+        const [
+            totalCountPromise,
+            laptopsCountPromise,
+            monitoresCountPromise,
+            inactivosCountPromise,
+            detallesCountPromise,
+            maxSucursalDataPromise // Ahora solo jala los datos para procesarlos en JS
+        ] = [
+            supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }),
+            supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('DISP', 'LAPTOP'),
+            supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('DISP', 'MONITOR'),
+            supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('ACTIVO', false),
+            supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('FUNCIONA', 'DETALLE'),
+            
+            // LÍNEA CORREGIDA: Trae todos los LUGAR_DPTO no nulos
+            supabaseClient.from(TABLA_INVENTARIO).select('LUGAR_DPTO').not('LUGAR_DPTO', 'is', null) 
+        ];
+
+        const results = await Promise.all([
+            totalCountPromise,
+            laptopsCountPromise,
+            monitoresCountPromise,
+            inactivosCountPromise,
+            detallesCountPromise,
+            maxSucursalDataPromise
+        ]);
+
+        const total = results[0].count || 0;
+        const laptops = results[1].count || 0;
+        const monitores = results[2].count || 0;
+        const inactivos = results[3].count || 0;
+        const detalles = results[4].count || 0;
+        const sucursalesData = results[5].data; 
+
+        let maxSucursalValue = 'N/A';
+        
+        if (sucursalesData && sucursalesData.length > 0) {
+            const counts = sucursalesData.reduce((acc, item) => {
+                const dpto = item.LUGAR_DPTO;
+                acc[dpto] = (acc[dpto] || 0) + 1;
+                return acc;
+            }, {});
+
+            let maxCount = 0;
+            for (const dpto in counts) {
+                if (counts[dpto] > maxCount) {
+                    maxCount = counts[dpto];
+                    maxSucursalValue = dpto;
+                }
+            }
+        }
+
+        // REGEX
+        if (maxSucursalValue !== 'N/A') {
+            const regex = /(GP-|\/.*)/g; 
+            maxSucursalValue = maxSucursalValue.replace(regex, '').trim();
+        }
+
+        updateStatDiv(statDivs.totalEquipos, total, 'EQUIPOS REGISTRADOS');
+        updateStatDiv(statDivs.laptops, laptops, 'LAPTOPS');
+        updateStatDiv(statDivs.monitores, monitores, 'MONITORES');
+        updateStatDiv(statDivs.detallesRevisar, detalles, 'DETALLES POR REVISAR');
+        updateStatDiv(statDivs.inactivos, inactivos, 'EQUIPOS INACTIVOS');
+        
+        updateStatDiv(statDivs.sucursalMax, maxSucursalValue, 'SUCURSAL CON MÁS EQUIPOS');
+
+
+    } catch (e) {
+        console.error("Error al cargar las estadísticas del dashboard:", e);
+        for (const key in statDivs) {
+            if (statDivs[key]) {
+                 statDivs[key].querySelector('.stat-value').innerHTML = 'Error';
+            }
+        }
+    }
+}
+
+
+function handleAuthStatus(session) {
+    const statElements = [
+        document.getElementById('div2'),
+        document.getElementById('div3'),
+        document.getElementById('div4'),
+        document.getElementById('div6'),
+        document.getElementById('div7'),
+        document.getElementById('div8')
+    ];
+
+    if (session) {
+        loginSection.style.display = 'none';
+        mainMenu.style.display = 'flex'; 
+        
+        statElements.forEach(div => { if (div) div.style.display = 'block'; });
+        loadDashboardStats(); 
+
+    } else {
+        loginSection.style.display = 'block';
+        mainMenu.style.display = 'none';
+        
+        statElements.forEach(div => { if (div) div.style.display = 'none'; });
+    }
+}
+
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -54,8 +149,12 @@ if (loginForm) {
         
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        
+        const submitButton = loginForm.querySelector('button');
+        submitButton.disabled = true;
+        submitButton.textContent = 'ACCEDIENDO...';
 
-        try {// Intenta iniciar sesión
+        try {
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: email,
                 password: password,
@@ -63,37 +162,34 @@ if (loginForm) {
 
             if (error) throw error;
             
-            // Si tiene EXITO
             handleAuthStatus(data.session);
 
         } catch (error) {
             console.error('Error de autenticación:', error.message);
             authError.textContent = 'Error: Credenciales inválidas. Verifica tu correo y contraseña.';
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'ACCEDER';
         }
     });
 }
 
-// CIERRE DE SESIÓN
 if (logoutButton) {
     logoutButton.addEventListener('click', async () => {
         const { error } = await supabaseClient.auth.signOut();
         if (error) {
             console.error('Error al cerrar sesión:', error.message);
         } else {
-            // Vuelve a la vista de login
             handleAuthStatus(null);
         }
     });
 }
 
 
-// VERIFICAR SESIÓN AL CARGAR LA PAGINA
 async function checkSession() {
-    // Revisa si ya hay una sesión activa en el navegador
     const { data: { session } } = await supabaseClient.auth.getSession();
     handleAuthStatus(session);
 
-    //Escuchar cambios de autenticación en tiempo real
     supabaseClient.auth.onAuthStateChange((event, session) => {
         handleAuthStatus(session);
     });
