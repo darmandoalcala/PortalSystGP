@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario General - Vista Moderna</title>
+    <title>VISTA DE INVENTARIO</title>
     
-    <link rel="stylesheet" href="styles/style_inventarioCSV.css">
+    <link rel="stylesheet" href="styles/style_vista_inventario.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -32,12 +32,31 @@
 </head>
 <body>
 
-    <header>
-        <h1>Inventario de Equipos</h1>
-        <p>Vista de solo lectura y en tiempo real de la base de datos.</p>
-    </header>
+        <header>
+            <div id="header-left-actions">
+                <a href="index.html" 
+                    id="back-to-menu-btn" 
+                    style="background-color: #e74c3c; color: white; border: none; padding: 10px; border-radius: 8px; font-size: 1em; cursor: pointer; text-decoration: none; display: inline-block;">
+                    <i class="fa-solid fa-arrow-left"></i> 
+                </a>
+            </div>
+
+            <div id="header-titles">
+                <h1>INVENTARIO DE EQUIPOS</h1>
+                <p>VISTA DE SOLO LECTURA Y EN TIEMPO REAL</p>
+            </div>
+            
+            <div id="header-right-spacer"></div>
+        </header>
 
     <main>
+        <div class="action-bar" style="text-align: center; margin-bottom: 20px;">
+            
+            <button id="crear-historial-button" 
+                    style="background-color: #E67E22; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 1em; cursor: pointer;">
+                <i class="fa-solid fa-file-invoice"></i> CREAR HISTORIAL DE INCIDENTES
+            </button>
+        </div>
         <div class="table-container">
             <div id="loading" class="loading-message">
                 <i class="fa-solid fa-spinner fa-spin"></i> Cargando datos del inventario...

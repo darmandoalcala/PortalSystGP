@@ -217,3 +217,78 @@ async function fetchAndRenderFromSupabase() {
 }
 
 window.onload = fetchAndRenderFromSupabase;
+
+
+// NUEVAS VARIABLES Y FUNCIONES DE HISTORIAL
+const TABLA_HISTORIAL = 'historial_revisiones'; 
+const historialButton = document.getElementById('crear-historial-button');
+
+function formatDateKey(dateString) {
+    if (!dateString) return 'NODATE';
+    // Asume el formato YYYY-MM-DD de Supabase y lo convierte a YYYYMMDD
+    return dateString.split('T')[0].replace(/-/g, ''); 
+}
+
+async function createIncidentHistory() {
+    
+    // 1. Consulta la tabla inventario por todos los equipos con estado 'DETALLE'
+    const { data: incidentData, error: fetchError } = await supabaseClient
+        .from('inventario')
+        .select('"NUMERO DE SERIE", DETALLES, USUARIO, "FECHA REVISADO"')
+        .eq('FUNCIONA', 'DETALLE');
+
+    if (fetchError) {
+        alert('Error al leer el inventario: ' + fetchError.message);
+        return;
+    }
+
+    if (!incidentData || incidentData.length === 0) {
+        alert('No se encontraron equipos con estado "DETALLE" para registrar historial.');
+        return;
+    }
+
+    // 2. Mapea y prepara los datos para la nueva tabla, creando la clave compuesta
+    const upsertData = incidentData.map(item => {
+        const dateKey = formatDateKey(item['FECHA REVISADO']);
+        const serialKey = item['NUMERO DE SERIE'] ? item['NUMERO DE SERIE'].trim().toUpperCase() : 'NOSERIAL';
+        
+        return {
+            // Clave Única: YYYYMMDD-SERIALNUMBER (La llave que evitará duplicados)
+            id_revision: `${dateKey}-${serialKey}`, 
+            
+            "NUMERO DE SERIE": item['NUMERO DE SERIE'], 
+            DETALLES: item.DETALLES,
+            USUARIO: item.USUARIO,
+            "FECHA REVISADO": item['FECHA REVISADO']
+        };
+    });
+
+    // 3. Usa UPSERT para insertar o actualizar si la id_revision ya existe
+    const { error: upsertError } = await supabaseClient
+        .from(TABLA_HISTORIAL)
+        .upsert(upsertData, { 
+            onConflict: 'id_revision', 
+            ignoreDuplicates: false 
+        }); 
+
+    if (upsertError) {
+        console.error("Error en Upsert:", upsertError);
+        alert('Error al insertar/actualizar el historial: ' + upsertError.message);
+    } else {
+        alert(`Historial de ${upsertData.length} incidentes (creados/actualizados) registrado con éxito.`);
+    }
+}
+
+// --- ENLACE AL BOTÓN DE HISTORIAL ---
+if (historialButton) {
+    historialButton.addEventListener('click', async () => {
+        const originalText = historialButton.innerHTML;
+        historialButton.disabled = true;
+        historialButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> REGISTRANDO HISTORIAL...';
+        
+        await createIncidentHistory();
+        
+        historialButton.disabled = false;
+        historialButton.innerHTML = originalText;
+    });
+}
