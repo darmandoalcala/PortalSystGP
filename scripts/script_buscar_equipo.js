@@ -32,7 +32,7 @@ async function searchInventory() {
         const { data, error } = await supabaseClient
             .from('inventario')
             .select('*')
-            .or(`USUARIO.ilike.%${upperSearchTerm}%,LUGAR_DPTO.ilike.%${upperSearchTerm}%`);
+            .or(`USUARIO.ilike.%${upperSearchTerm}%,LUGAR_DPTO.ilike.%${upperSearchTerm}%,NUMERO DE SERIE.ilike.%${upperSearchTerm}%`);
 
         if (error) throw error;
 

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Incidentes y Revisiones</title>
+    
+    <link rel="stylesheet" href="styles/01_styles.css"> 
+    <link rel="stylesheet" href="styles/style_vista_inventario.css">
+    <link rel="stylesheet" href="styles/modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <header>
+        <div id="header-left-actions">
+            <a href="index.html" 
+                id="back-to-menu-btn" 
+                style="font-size: 1em;">
+                <i class="fa-solid fa-arrow-left"></i> 
+            </a>
+        </div>
+
+        <div id="header-titles">
+            <h1>HISTORIAL DE INCIDENTES</h1>
+            <p>REGISTRO COMPLETO DE LOS DETALLES ENCONTRADOS EN LAS REVISIONES.</p>
+        </div>
+        
+        <div id="header-right-spacer"></div>
+    </header>
+
+    <main>
+
+
+        <div class="table-container">
+            <div id="loading">
+                <i class="fa-solid fa-spinner fa-spin"></i> CARGANDO REGISTROS DE HISTORIAL...
+            </div>
+            
+            <table id="historialTable">
+                <thead>
+                    <tr>
+                        <th>FECHA DE REVISIÓN</th>
+                        <th>NÚMERO DE SERIE</th>
+                        <th>ESTADO</th>
+                        <th>USUARIO</th>
+                        <th>DETALLES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+    </main>
+    
+    <footer>
+        <p>DATOS SINCRONIZADOS CON SUPABASE.</p>
+    </footer>
+
+    <script src="scripts/global_modal_control.js"></script> 
+    <script src="scripts/script_vista_historial_incidentes.js"></script>
+</body>
+</html>

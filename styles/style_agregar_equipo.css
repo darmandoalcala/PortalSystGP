@@ -64,4 +64,4 @@
     transition: background 0.3s, transform 0.1s;
 }
 
-.guardar-equipo:hover{background:linear-gradient(to right,#008f65,#007652);transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,0.2);}
+.guardar-equipo:hover{filter:contrast(175%) brightness(103%);transform:translateY(-10px);}

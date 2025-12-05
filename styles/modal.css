@@ -15,8 +15,11 @@ to{opacity:1;transform:translateY(0);}
 .close-button{color:#aaa;float:right;font-size:28px;font-weight:bold;cursor:pointer;line-height:18px;}
 .close-button:hover,.close-button:focus{color:#333;text-decoration:none;}
 
-.action-button{background-color:#2ecc71;color:white;border:none;padding:10px 20px;border-radius:8px;font-size:1em;font-weight:600;cursor:pointer;transition:background-color 0.2s,transform 0.2s;box-shadow:0 2px 4px rgba(0,0,0,0.1);}
-.action-button:hover{background-color:#28b362;transform:translateY(-1px);box-shadow:0 4px 8px rgba(0,0,0,0.2);}
+.action-button{
+    color:white;border:none;padding:10px 20px;border-radius:8px;
+    font-size:1em;font-weight:600;cursor:pointer;transition:background-color 0.2s,transform 0.2s;
+    box-shadow:0 2px 4px rgba(0,0,0,0.1);}
+.action-button:hover{filter:contrast(175%) brightness(103%);transform:translateY(-10px);}
 .action-button i{color:white;margin-right:8px;}
 
 /*IMAGEN*/
