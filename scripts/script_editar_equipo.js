@@ -46,7 +46,7 @@ function updateDeviceImage(data) {
     const deviceType = data.DISP || '';
     let imagePath;
     if (deviceType) {
-        imagePath = BASE_DEVICE_IMAGE_PATH + deviceType.toLowerCase() + '.png';
+        imagePath = BASE_DEVICE_IMAGE_PATH + deviceType.toUpperCase() + '.png';
     } else {
         imagePath = DEFAULT_DEVICE_IMAGE;
     }
