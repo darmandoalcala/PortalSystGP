@@ -133,22 +133,40 @@ async function handleUpdate(event) {
     const updateData = {};
 
     for (const [key, value] of formData.entries()) {
-        if (key === 'lugar_base' || key === 'dpto_base') continue; 
+        if (key === 'lugar_base' || key === 'dpto_base') continue;          //IGNORAR CAMPOS AUXILIARES
         
         let cleanedValue = (typeof value === 'string' ? value.trim() : value) || null;
+        
+        // Si se asignaron valores vacíos, enviarlos como null
+        if (cleanedValue === null) {
+            updateData[key] = null;
+            continue;
+        }
 
+        // ACTIVO
         if (key === 'ACTIVO') {
             updateData[key] = cleanedValue === 'TRUE';
+            
+        // FECHAS
+        } else if (key === 'FECHA COMPRA' || key === 'FECHA REVISADO') {
+            updateData[key] = cleanedValue; 
+            
+        // DETALLES
+        } else if (key === 'DETALLES') {
+            updateData[key] = String(cleanedValue).toUpperCase(); 
+            
+        // EL RESTO...
         } else {
-            updateData[key] = cleanedValue ? String(cleanedValue).toUpperCase() : cleanedValue;
+            updateData[key] = String(cleanedValue).toUpperCase();
         }
     }
 
+    // UPDATE
     try {
         const { error } = await supabaseClient
             .from(TABLA_INVENTARIO)
             .update(updateData)
-            .eq('NUMERO DE SERIE', currentSerialNumber); 
+            .eq('NUMERO DE SERIE', currentSerialNumber);
 
         if (error) throw error;
 
@@ -165,8 +183,7 @@ async function handleUpdate(event) {
 }
 
 
-// --- INICIALIZACIÓN ---
-
+// INICIALIZACIoN
 document.addEventListener('DOMContentLoaded', () => {
     fetchEquipoDetails(); 
     

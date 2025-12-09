@@ -62,16 +62,39 @@ function showGlobalModal(data) {
     if (!modal) return;
 
     const brand = String(data.MARCA || 'DEFAULT').toUpperCase();
-    const imagePath = BRAND_IMAGES[brand] || BRAND_IMAGES['DEFAULT'];
+    const imageBrandPath = BRAND_IMAGES[brand] || BRAND_IMAGES['DEFAULT'];
+    const imageDevicePath = 'img/disp/' + (data.DISP ? String(data.DISP).toUpperCase() : 'DEFAULT') + '.png';
     const fechaInventariado = data['FECHA REVISADO']; 
     const fechaCompra = data['FECHA COMPRA']; 
     const serialNumber = data['NUMERO DE SERIE'];
+    const activo = String(data['ACTIVO']).toUpperCase();
 
     // Llenado de Títulos e Imagen
-    document.getElementById('modal-image-container').innerHTML = 
-        `<img src="${imagePath}" alt="${data.MARCA} ${data.MODELO}" class="modal-device-image">`;
+    document.getElementById('modal-image-container-brand').innerHTML = 
+        `<img src="${imageBrandPath}" alt="${data.MARCA} ${data.MODELO}" class="modal-device-image">`;
+    document.getElementById('modal-image-container-device').innerHTML = 
+        `<img src="${imageDevicePath}" alt="${data.MARCA} ${data.MODELO}" class="modal-device-image">`;
     document.getElementById('modal-title').textContent = 
         `${data.MARCA || 'N/A'} ${data.MODELO || 'N/A'} (${data.DISP || 'N/A'})`;
+
+    // Mostrar estado en el título y actualizar la clase del cuerpo del modal
+    const modalActiveEl = document.getElementById('modal-active');
+    const modalGeneralInfo = modal.querySelector('.modal-general-info');
+
+    if (activo === 'TRUE') {
+        if (modalActiveEl) modalActiveEl.innerHTML = '<i class="fa-solid fa-circle-check activo-si-icon"> ACTIVO</i>';
+        if (modalGeneralInfo) {
+            modalGeneralInfo.classList.remove('inactivo');
+            modalGeneralInfo.classList.add('activo');
+        }
+    } else {
+        if (modalActiveEl) modalActiveEl.innerHTML = '<i class="fa-solid fa-circle-xmark activo-no-icon"> INACTIVO</i>';
+        if (modalGeneralInfo) {
+            modalGeneralInfo.classList.remove('activo');
+            modalGeneralInfo.classList.add('inactivo');
+        }
+    }
+
     document.getElementById('modal-subtitle').textContent = 
         `S/N: ${data['NUMERO DE SERIE'] || 'N/A'}`;
         

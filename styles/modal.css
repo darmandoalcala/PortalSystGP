@@ -3,10 +3,13 @@
 .modal-content{background-color:#fefefe;margin:10% auto;padding:25px;border:1px solid #888;width:80%;max-width:600px;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,0.3);position:relative;animation:fadeIn 0.3s;}
 /* TIPOGRAFIA */
 #modal-title{color:#3498db;margin-top:0;border-bottom:2px solid #ecf0f1;padding-bottom:10px;}
+#modal-active{color:#3498db;margin-top:0;border-bottom:2px solid #ecf0f1;padding-bottom:10px;}
 #modal-subtitle{color:#7f8c8d;font-size:1.1em;font-weight:normal;margin-bottom:20px;}
 #modal-details-content{background-color:#f8f8f8;border:1px solid #eee;padding:10px;margin-top:10px;border-radius:4px;white-space:pre-wrap;}
 .modal-body p{margin-bottom:8px;font-size:0.95em;}
-.modal-body i{color:#2ecc71;margin-right:8px;}
+.modal-general-info i{color:#7f8c8d;margin-right:8px;}
+.modal-general-info.activo i{color:#2ecc71;}
+.modal-general-info.inactivo i{color:#c0392b;}
 /* ANIMACION ENTRADA */
 @keyframes fadeIn{from{opacity:0;transform:translateY(-20px);}
 to{opacity:1;transform:translateY(0);}
@@ -23,5 +26,5 @@ to{opacity:1;transform:translateY(0);}
 .action-button i{color:white;margin-right:8px;}
 
 /*IMAGEN*/
-#modal-image-container{text-align:center;margin-bottom:20px;padding:10px;background-color:#f8f8f8;border-radius:8px;}
-.modal-device-image{max-width:100%;max-height:180px;object-fit:contain;border-radius:6px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.modal-2-image-horizontal{display:flex;justify-content:center;align-items:center;margin-bottom:20px;border-radius:6px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.modal-device-image{max-width:100%;max-height:180px;}
