@@ -98,7 +98,7 @@ async function exportToCSV() {
 
         // 4. Convertir datos JSON a  CSV
         const csv = Papa.unparse(processedData, {
-            delimiter: ';', //IMPORTANTE, EXCEL 365 USA ";", no ","
+            delimiter: ',', 
             quotes: true
         });
 

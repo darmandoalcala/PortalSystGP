@@ -111,7 +111,7 @@ function renderTable(csv) {
     const results = Papa.parse(csv, {
         header: true,
         skipEmptyLines: true,
-        delimiter: '', 
+        delimiter: ',', 
         trimHeaders: true,
         dynamicTyping: true, 
     });
@@ -225,7 +225,7 @@ async function uploadDataToDataBase(csv) {
     const results = Papa.parse(csv, {
         header: true,
         skipEmptyLines: true,
-        delimiter: '', 
+        delimiter: ',', 
         trimHeaders: true,
         dynamicTyping: false
     });
