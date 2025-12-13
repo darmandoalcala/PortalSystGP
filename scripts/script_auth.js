@@ -4,6 +4,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const TABLA_INVENTARIO = 'inventario';
+const TABLA_USUARIOS = 'usuarios';
 
 const loginForm = document.getElementById('login-form');
 const logoutButton = document.getElementById('logout-button');
@@ -54,7 +55,7 @@ async function loadDashboardStats() {
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('FUNCIONA', 'DETALLE'),
             
             // LÍNEA CORREGIDA: Trae todos los LUGAR_DPTO no nulos
-            supabaseClient.from(TABLA_INVENTARIO).select('LUGAR_DPTO').not('LUGAR_DPTO', 'is', null) 
+            supabaseClient.from(TABLA_USUARIOS).select('LUGAR_DPTO').not('LUGAR_DPTO', 'is', null) 
         ];
 
         const results = await Promise.all([
@@ -93,7 +94,7 @@ async function loadDashboardStats() {
 
         // REGEX
         if (maxSucursalValue !== 'N/A') {
-            const regex = /(GP-|\/.*)/g; 
+            const regex = /^[^/]*\//;
             maxSucursalValue = maxSucursalValue.replace(regex, '').trim();
         }
 
