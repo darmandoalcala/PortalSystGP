@@ -3,14 +3,19 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// SE ELIMINARON: BRAND_IMAGES, calculateDaysAgo, modal, closeButton, showModal, closeButton.onclick, window.onclick
-
 const searchInput = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
 const tbody = document.getElementById('inventoryTable').querySelector('tbody');
 const loadingMessage = document.getElementById('loadingMessage');
 
 searchButton.addEventListener('click', searchInventory);
+
+// Permitir buscar con ENTER
+searchInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        searchInventory();
+    }
+});
 
 async function searchInventory() {
     const searchTerm = searchInput.value.trim();
@@ -21,28 +26,57 @@ async function searchInventory() {
         return;
     }
     
-    // Convertir el término de búsqueda a mayúsculas para coincidencia (similar al CSV)
     const upperSearchTerm = searchTerm.toUpperCase(); 
 
     loadingMessage.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Buscando...';
     tbody.innerHTML = '';
 
     try {
-        // Buscar coincidencias parciales (case-insensitive LIKE) en USUARIO o LUGAR/DPTO
+        // 1. TRAEMOS TODO EL INVENTARIO + DATOS DE USUARIOS
+        // (Quitamos el .or() de aquí para filtrar en memoria)
         const { data, error } = await supabaseClient
             .from('inventario')
-            .select('*')
-            .or(`USUARIO.ilike.%${upperSearchTerm}%,LUGAR_DPTO.ilike.%${upperSearchTerm}%,NUMERO DE SERIE.ilike.%${upperSearchTerm}%`);
+            .select(`
+                *,
+                usuarios (
+                    "NOMBRE COMPLETO",
+                    "LUGAR_DPTO",
+                    "DEPARTAMENTO"
+                )
+            `);
 
         if (error) throw error;
 
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
+            loadingMessage.textContent = `❌ Base de datos vacía.`;
+            return;
+        }
+
+        // 2. FILTRADO EN JAVASCRIPT (Aquí es donde buscamos en todas partes)
+        const filteredData = data.filter(item => {
+            // Obtenemos los valores en mayúsculas para comparar
+            const serial = (item['NUMERO DE SERIE'] || '').toUpperCase();
+            
+            const usuarioInfo = item.usuarios || {};
+            const nombre = (usuarioInfo['NOMBRE COMPLETO'] || '').toUpperCase();
+            const lugar = (usuarioInfo['LUGAR_DPTO'] || '').toUpperCase();
+            const depto = (usuarioInfo['DEPARTAMENTO'] || '').toUpperCase();
+
+            // Retornamos TRUE si el término está en CUALQUIERA de estos campos
+            return serial.includes(upperSearchTerm) || 
+                   nombre.includes(upperSearchTerm) || 
+                   lugar.includes(upperSearchTerm) || 
+                   depto.includes(upperSearchTerm);
+        });
+
+        // 3. VERIFICAR RESULTADOS DEL FILTRO
+        if (filteredData.length === 0) {
             loadingMessage.textContent = `❌ No se encontraron equipos para "${searchTerm}".`;
             return;
         }
 
-        renderSimpleTable(data);
-        loadingMessage.textContent = `✅ ${data.length} resultados encontrados.`;
+        renderSimpleTable(filteredData);
+        loadingMessage.textContent = `✅ ${filteredData.length} resultados encontrados.`;
 
     } catch (error) {
         console.error('Error de búsqueda:', error);
@@ -50,33 +84,46 @@ async function searchInventory() {
     }
 }
 
-// RENDERIZADO SIMPLE Y MODAL
 function renderSimpleTable(data) {
     tbody.innerHTML = '';
 
-    data.forEach(item => {
+    const flatData = data.map(item => {
+        const usuarioInfo = item.usuarios || {};
+        
+        let dpto = 'N/A';
+        // Lógica de prioridad de departamento
+        if (usuarioInfo['LUGAR_DPTO']) {
+            dpto = usuarioInfo['LUGAR_DPTO'];
+        } else if (usuarioInfo['DEPARTAMENTO']) {
+            dpto = usuarioInfo['DEPARTAMENTO'];
+        }
+
+        return {
+            ...item,
+            "USUARIO_DISPLAY": usuarioInfo['NOMBRE COMPLETO'] || 'SIN ASIGNAR',
+            "LUGAR_DISPLAY": dpto
+        };
+    });
+
+    flatData.forEach(item => {
         let bodyRow = document.createElement('tr');
         
-        // CORRECCIÓN CLAVE: Usar la función global showGlobalModal
         bodyRow.addEventListener('click', () => {
             if (typeof showGlobalModal === 'function') {
                 showGlobalModal(item);
             } else {
-                console.error("showGlobalModal no está definida. Asegúrate de cargar el script global del modal.");
+                console.error("showGlobalModal no está definida.");
             }
         });
 
-        // Columna 1: USUARIO
         let tdUser = document.createElement('td');
-        tdUser.textContent = item.USUARIO || 'N/A';
+        tdUser.textContent = item['USUARIO_DISPLAY'];
         bodyRow.appendChild(tdUser);
 
-        // Columna 2: LUGAR/DPTO
         let tdLocation = document.createElement('td');
-        tdLocation.textContent = item['LUGAR_DPTO'] || 'N/A';
+        tdLocation.textContent = item['LUGAR_DISPLAY'];
         bodyRow.appendChild(tdLocation);
         
-        // Columna 3: NUMERO DE SERIE
         let tdSerial = document.createElement('td');
         tdSerial.textContent = item['NUMERO DE SERIE'] || 'N/A';
         bodyRow.appendChild(tdSerial);
