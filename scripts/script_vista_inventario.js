@@ -27,8 +27,8 @@ function renderTableFromObjects(data) {
         // Usamos los datos aplanados de aquí en adelante
         const allHeaders = Object.keys(flatData[0]).filter(k => k !== 'usuarios');
 
-        // Columnas que NO queremos ver en la tabla
-        const excludedHeaders = ['id', 'created_at', 'id_usuario', 'usuarios'];
+        // Columnas que NO queremos VER en la tabla
+        const excludedHeaders = ['id', 'created_at', 'id_usuario', 'usuarios','MARCA','MODELO','LUGARDPTO','FECHA COMPRA'];
 
         const table = document.getElementById('inventoryTable');
         const thead = table.querySelector('thead');
@@ -196,7 +196,7 @@ async function createIncidentHistory() {
                         DETALLES: item.DETALLES,
                         USUARIO: nombreUsuario, // Guardamos el texto del nombre en el historial
                         "FECHA REVISADO": item['FECHA REVISADO'],
-                        FUNCIONA: item.FUNCIONA // Opcional si tu tabla historial lo soporta
+                        FUNCIONA: item.FUNCIONA 
                 };
         });
 
