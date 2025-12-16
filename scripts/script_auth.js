@@ -10,6 +10,7 @@ const loginForm = document.getElementById('login-form');
 const logoutButton = document.getElementById('logout-button');
 const loginSection = document.getElementById('login-section');
 const mainMenu = document.getElementById('main-menu');
+const headerParagraph = document.getElementById('header-paragraph');
 const authError = document.getElementById('auth-error');
 
 const statDivs = {
@@ -46,15 +47,13 @@ async function loadDashboardStats() {
             monitoresCountPromise,
             inactivosCountPromise,
             detallesCountPromise,
-            maxSucursalDataPromise // Ahora solo jala los datos para procesarlos en JS
+            maxSucursalDataPromise
         ] = [
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }),
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('DISP', 'LAPTOP'),
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('DISP', 'MONITOR'),
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('ACTIVO', false),
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('FUNCIONA', 'DETALLE'),
-            
-            // LÍNEA CORREGIDA: Trae todos los LUGAR_DPTO no nulos
             supabaseClient.from(TABLA_USUARIOS).select('LUGAR_DPTO').not('LUGAR_DPTO', 'is', null) 
         ];
 
@@ -131,6 +130,7 @@ function handleAuthStatus(session) {
     if (session) {
         loginSection.style.display = 'none';
         mainMenu.style.display = 'flex'; 
+        headerParagraph.textContent = 'BIENVENIDO';
         
         statElements.forEach(div => { if (div) div.style.display = 'block'; });
         loadDashboardStats(); 
@@ -138,6 +138,7 @@ function handleAuthStatus(session) {
     } else {
         loginSection.style.display = 'block';
         mainMenu.style.display = 'none';
+        headerParagraph.textContent = 'INICIA SESIÓN PARA ACCEDER A LAS HERRAMIENTAS.';
         
         statElements.forEach(div => { if (div) div.style.display = 'none'; });
     }
