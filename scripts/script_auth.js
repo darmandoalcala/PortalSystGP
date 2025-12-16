@@ -104,14 +104,14 @@ async function loadDashboardStats() {
         updateStatDiv(statDivs.detallesRevisar, detalles, 'DETALLES POR REVISAR');
         updateStatDiv(statDivs.inactivos, inactivos, 'EQUIPOS INACTIVOS');
         
-        updateStatDiv(statDivs.sucursalMax, maxSucursalValue, 'SUCURSAL CON MÁS EQUIPOS');
+        updateStatDiv(statDivs.sucursalMax, maxSucursalValue, 'ES EL DEPARTAMENTO CON MÁS EQUIPOS');
 
 
     } catch (e) {
         console.error("Error al cargar las estadísticas del dashboard:", e);
         for (const key in statDivs) {
             if (statDivs[key]) {
-                 statDivs[key].querySelector('.stat-value').innerHTML = 'Error';
+                statDivs[key].querySelector('.stat-value').innerHTML = 'Error';
             }
         }
     }

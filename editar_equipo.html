@@ -42,7 +42,7 @@
                     <input
                         type="text"
                         id="numserie"
-                        name="NUMERO DE SERIE"  required
+                        name="NUMERO DE SERIE"  required
                         placeholder="S/N, ST, SERIALNUM, ETC" 
                         oninput="this.value = this.value.toUpperCase()"
                         readonly
@@ -100,21 +100,39 @@
 
                 <div class="campo-individual">
                     <label for="nota">6. DETALLES:</label>
-                    <textarea id="nota" name="DETALLES" rows="3" oninput="this.value = this.value.toUpperCase()" readonly></textarea> </div>
+                    <textarea id="nota" name="DETALLES" rows="3" oninput="this.value = this.value.toUpperCase()"></textarea> </div>
             </div>
 
-            <label class="label-encabezado">7. PERTENECE A: </label> 
+            <label class="label-encabezado">7. ASIGNACIÓN DE USUARIO: </label> 
             <div class="grupo-horizontal">
-                <div class="campo-individual">
-                    <label for="usuario">USUARIO: </label>
-                    <input type="text" id="usuario" name="USUARIO" required placeholder="NOMBRE APELLIDO" oninput="this.value = this.value.toUpperCase()"> </div>
+                
+                <div class="campo-individual" style="position: relative;">
+                    <label for="usuario_search">BUSCAR COLABORADOR: </label>
+                    <input type="text" id="usuario_search" placeholder="Escribe para buscar..." autocomplete="off">
+                    
+                    <ul id="user-suggestions" style="
+                        display:none; 
+                        position:absolute; 
+                        background:white; 
+                        border:1px solid #ccc; 
+                        width:100%; 
+                        max-height:150px; 
+                        overflow-y:auto; 
+                        z-index:1000;
+                        list-style:none;
+                        padding:0;
+                        margin:0;
+                    "></ul>
+
+                    <input type="hidden" id="id_usuario" name="id_usuario" required>
+                </div>
                 
                 <div class="campo-individual">
-                    <label for="lugar_dpto">LUGAR_DPTO: </label>
-                    <input type="text" id="lugar_dpto" name="LUGAR_DPTO" required placeholder="GP-LUGAR/DEPARTAMENTO" oninput="this.value = this.value.toUpperCase()"> 
+                    <label for="usuario_dpto_display">DEPARTAMENTO ASIGNADO: </label>
+                    <input type="text" id="usuario_dpto_display" readonly placeholder="Se llena automático" style="background-color: #f0f0f0;">
                 </div>
+
             </div>
-            
             <label class="label-encabezado">8. FECHA DE: </label>
             <div class="grupo-horizontal">
                 <div class="campo-individual">

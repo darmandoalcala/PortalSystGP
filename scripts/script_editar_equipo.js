@@ -3,43 +3,71 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const TABLA_INVENTARIO = 'inventario';
+const TABLA_USUARIOS = 'usuarios';
 
 const equipoForm = document.getElementById('equipoForm');
 const saveButton = document.getElementById('saveButton'); 
 
 let currentSerialNumber = null; 
 
-const formFieldMapping = {
-    'NUMERO DE SERIE': 'NUMERO DE SERIE',
-    'MARCA': 'MARCA',
-    'MODELO': 'MODELO',
-    'DISP': 'DISP',
-    'USUARIO': 'USUARIO',
-    'LUGAR_DPTO': 'LUGAR_DPTO',
-    'FECHA COMPRA': 'FECHA COMPRA',
-    'FECHA REVISADO': 'FECHA REVISADO',
-    'FUNCIONA': 'FUNCIONA',
-    'DETALLES': 'DETALLES',
-    'ACTIVO': 'ACTIVO' 
-};
-
-const BRAND_IMAGES = {
-    'LENOVO': 'img/lenovo_logo.png',
-    'HP': 'img/hp_logo.png',
-    'DELL': 'img/dell_logo.png',
-    'ASUS': 'img/asus_logo.png',
-    'MSI': 'img/msi_logo.png',
-    'ACER': 'img/acer_logo.png',
-    'DEFAULT': 'img/default_logo.png'
-};
+const usuarioSearchInput = document.getElementById('usuario_search');
+const suggestionsList = document.getElementById('user-suggestions');
+const idUsuarioHidden = document.getElementById('id_usuario');
+const dptoDisplay = document.getElementById('usuario_dpto_display');
 
 const BASE_DEVICE_IMAGE_PATH = 'img/disp/';
 const DEFAULT_DEVICE_IMAGE = BASE_DEVICE_IMAGE_PATH + 'DEFAULT.png';
 
-/**
- * Actualiza la imagen lateral del equipo basándose en el TIPO de dispositivo (DISP).
- * @param {Object} data - Objeto de datos del equipo (con DISP).
- */
+async function fetchAndRenderSuggestions() {
+    if (!usuarioSearchInput) return;
+    const query = usuarioSearchInput.value.trim().toUpperCase();
+    
+    if (query.length < 3) {
+        suggestionsList.style.display = 'none';
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from(TABLA_USUARIOS)
+        .select('id, "NOMBRE COMPLETO", "DEPARTAMENTO", "LUGAR_DPTO", "NUMERO EMPLEADO"')
+        .or(`"NOMBRE COMPLETO".ilike.%${query}%, "NUMERO EMPLEADO".ilike.%${query}%`)
+        .limit(5);
+
+    if (error) {
+        console.error("Error buscando usuarios:", error);
+        return;
+    }
+
+    suggestionsList.innerHTML = '';
+    if (data.length > 0) {
+        suggestionsList.style.display = 'block';
+        data.forEach(user => {
+            const li = document.createElement('li');
+            li.style.cssText = 'padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;';
+            const ubicacion = user['LUGAR_DPTO'] || user['DEPARTAMENTO'] || 'N/A';
+            li.textContent = `${user['NOMBRE COMPLETO']} (${ubicacion})`;
+            
+            li.addEventListener('click', () => {
+                seleccionarUsuario(user);
+            });
+            
+            suggestionsList.appendChild(li);
+        });
+    } else {
+        suggestionsList.style.display = 'none';
+    }
+}
+
+function seleccionarUsuario(user) {
+    usuarioSearchInput.value = user['NOMBRE COMPLETO'];
+    idUsuarioHidden.value = user.id;
+    
+    const ubicacion = user['LUGAR_DPTO'] || user['DEPARTAMENTO'] || 'N/A';
+    dptoDisplay.value = ubicacion;
+    
+    suggestionsList.style.display = 'none';
+}
+
 function updateDeviceImage(data) {
     const dispLateralImg = document.querySelector('#disp-lateral-form img');
     if (!dispLateralImg) return;
@@ -53,28 +81,39 @@ function updateDeviceImage(data) {
     dispLateralImg.src = imagePath;
     dispLateralImg.alt = `IMAGEN DE ${deviceType}`;
 }
+
+// FUNCIÓN CLAVE PARA LA FECHA ACTUAL
+function setFechaRevisadoActual() {
+    const inputFechaRevisado = document.getElementById('fecha-revisado');
+    const hoy = new Date();
+    const fechaFormateada = hoy.toISOString().split('T')[0];
+    inputFechaRevisado.value = fechaFormateada;
+}
+
 async function fetchEquipoDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const serial = urlParams.get('serial');
-    console.log("Serial obtenido de la URL:", serial);
     
     if (!serial) {
         alert('Error: Número de serie no especificado en la URL.');
         return;
     }
     
-    currentSerialNumber = serial;
+    currentSerialNumber = serial.toUpperCase();
 
     const serialInput = document.querySelector('input[name="NUMERO DE SERIE"]');
     if (serialInput) {
-        serialInput.value = serial;
+        serialInput.value = currentSerialNumber;
     }
 
     try {
         const { data, error } = await supabaseClient
             .from(TABLA_INVENTARIO)
-            .select('*')
-            .eq('NUMERO DE SERIE', serial)
+            .select(`
+                *,
+                usuarios (id, "NOMBRE COMPLETO", "DEPARTAMENTO", "LUGAR_DPTO")
+            `)
+            .eq('NUMERO DE SERIE', currentSerialNumber)
             .single(); 
 
         if (error) throw error;
@@ -82,8 +121,11 @@ async function fetchEquipoDetails() {
         if (data) {
             updateDeviceImage(data);
             fillForm(data);
+            fillUserFields(data);
+            // Establecer la fecha de revisión al día de hoy al cargar el formulario
+            setFechaRevisadoActual(); 
         } else {
-            alert(`Equipo con S/N ${serial} no encontrado.`);
+            alert(`Equipo con S/N ${currentSerialNumber} no encontrado.`);
         }
 
     } catch (error) {
@@ -93,8 +135,16 @@ async function fetchEquipoDetails() {
 }
 
 function fillForm(data) {
+    // Llenado de DETALLES para evitar fallo del textarea
+    const detallesElement = document.getElementById('nota');
+    if (detallesElement) {
+        detallesElement.value = data.DETALLES || '';
+    }
+
     for (const key in data) {
         if (data.hasOwnProperty(key)) {
+            if (key === 'id_usuario' || key === 'usuarios' || key === 'USUARIO' || key === 'LUGAR_DPTO' || key === 'DETALLES' || key === 'FECHA REVISADO') continue;
+
             const element = document.querySelector(`[name="${key}"]`);
             if (element) {
                 let value = data[key];
@@ -103,18 +153,37 @@ function fillForm(data) {
                     const radioValue = value ? 'TRUE' : 'FALSE';
                     const radioElement = document.querySelector(`input[name="ACTIVO"][value="${radioValue}"]`);
                     if (radioElement) radioElement.checked = true;
-                    
                 } else if (key === 'FUNCIONA' && element.type === 'radio') {
                     const radioElement = document.querySelector(`input[name="FUNCIONA"][value="${value}"]`);
                     if (radioElement) radioElement.checked = true;
-                    
                 } else if (element.type === 'radio' || element.type === 'checkbox') {
-                    // Ignorar
                 } else {
                     element.value = value || '';
                 }
             }
         }
+    }
+}
+
+function fillUserFields(data) {
+    const user = data.usuarios; 
+    
+    if (idUsuarioHidden) {
+        idUsuarioHidden.value = data.id_usuario || '';
+    }
+
+    if (user && user.id) {
+        if (usuarioSearchInput) {
+            usuarioSearchInput.value = user['NOMBRE COMPLETO'] || 'SIN ASIGNAR';
+        }
+
+        if (dptoDisplay) {
+            const ubicacion = user['LUGAR_DPTO'] || user['DEPARTAMENTO'] || 'N/A';
+            dptoDisplay.value = ubicacion;
+        }
+    } else {
+        if (usuarioSearchInput) usuarioSearchInput.value = '';
+        if (dptoDisplay) dptoDisplay.value = 'SIN ASIGNAR';
     }
 }
 
@@ -133,35 +202,38 @@ async function handleUpdate(event) {
     const updateData = {};
 
     for (const [key, value] of formData.entries()) {
-        if (key === 'lugar_base' || key === 'dpto_base') continue;          //IGNORAR CAMPOS AUXILIARES
+        if (key === 'USUARIO_SEARCH' || key === 'NUMERO DE SERIE') continue;
         
         let cleanedValue = (typeof value === 'string' ? value.trim() : value) || null;
         
-        // Si se asignaron valores vacíos, enviarlos como null
         if (cleanedValue === null) {
             updateData[key] = null;
             continue;
         }
 
-        // ACTIVO
         if (key === 'ACTIVO') {
             updateData[key] = cleanedValue === 'TRUE';
             
-        // FECHAS
-        } else if (key === 'FECHA COMPRA' || key === 'FECHA REVISADO') {
+        } else if (key === 'FECHA COMPRA' || key === 'FECHA REVISADO' || key === 'id_usuario') {
             updateData[key] = cleanedValue; 
             
-        // DETALLES
-        } else if (key === 'DETALLES') {
-            updateData[key] = String(cleanedValue).toUpperCase(); 
-            
-        // EL RESTO...
         } else {
             updateData[key] = String(cleanedValue).toUpperCase();
         }
     }
+    
+    // Incluir la fecha de revisión actual
+    setFechaRevisadoActual();
+    updateData['FECHA REVISADO'] = document.getElementById('fecha-revisado').value;
+    updateData['DETALLES'] = document.getElementById('nota').value.toUpperCase();
 
-    // UPDATE
+    if (!updateData.id_usuario && usuarioSearchInput.value) {
+        alert('Por favor, selecciona un usuario de la lista de sugerencias para obtener su ID.');
+        saveButton.disabled = false;
+        saveButton.textContent = 'GUARDAR CAMBIOS';
+        return;
+    }
+
     try {
         const { error } = await supabaseClient
             .from(TABLA_INVENTARIO)
@@ -183,10 +255,18 @@ async function handleUpdate(event) {
 }
 
 
-// INICIALIZACIoN
 document.addEventListener('DOMContentLoaded', () => {
     fetchEquipoDetails(); 
     
+    if (usuarioSearchInput) {
+        usuarioSearchInput.addEventListener('input', fetchAndRenderSuggestions);
+    }
+    document.addEventListener('click', function(e) {
+        if (suggestionsList && e.target !== usuarioSearchInput && e.target !== suggestionsList) {
+            suggestionsList.style.display = 'none';
+        }
+    });
+
     if (equipoForm) {
         equipoForm.addEventListener('submit', handleUpdate);
     }

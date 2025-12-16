@@ -71,7 +71,7 @@ if (usuarioSearchInput) {
                 li.style.padding = '8px';
                 li.style.cursor = 'pointer';
                 li.style.borderBottom = '1px solid #eee';
-                li.textContent = `${user['NOMBRE COMPLETO']} (${user['DEPARTAMENTO'] || user['LUGAR_DPTO'] || 'N/A'})`;
+                li.textContent = `${user['NUMERO EMPLEADO']} - ${user['NOMBRE COMPLETO']} (${user['DEPARTAMENTO'] || user['LUGAR_DPTO'] || 'N/A'})`;
                 
                 // Al hacer clic en una sugerencia
                 li.addEventListener('click', () => {
@@ -95,7 +95,7 @@ if (usuarioSearchInput) {
 
 function seleccionarUsuario(user) {
     usuarioSearchInput.value = user['NOMBRE COMPLETO'];
-    idUsuarioHidden.value = user.id; // Guardamos el ID real
+    idUsuarioHidden.value = user.id;
     
     // Mostrar info extra para confirmación visual
     const ubicacion = user['LUGAR_DPTO'] || user['DEPARTAMENTO'] || 'N/A';
