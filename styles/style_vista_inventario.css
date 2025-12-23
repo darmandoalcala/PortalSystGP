@@ -7,7 +7,7 @@ input[type="file"]{border:1px solid #ccc;background-color:#fff;}
 #uploadButton{background-color:#5087be;color:white;border:none;transition:background-color 0.3s;}
 #uploadButton:hover:not(:disabled){background-color:#4372a1;}
 #uploadButton:disabled{background-color:#bdc3c7;cursor:not-allowed;}
-.action-bar{text-align: center; margin-bottom: 20px;}
+.action-bar{text-align:center; margin-bottom: 20px;gap:10px}
 .table-container{overflow-x:auto;background-color:#fff;border-radius:8px;box-shadow:0 8px 16px rgba(0,0,0,0.1);padding:15px;}
 #inventoryTable{width:100%;border-collapse:collapse;min-width:800px;}
 #inventoryTable thead th{background-color:#3498db;color:white;padding:12px 15px;text-align:left;font-weight:bold;text-transform:uppercase;letter-spacing:0.05em;border-bottom:3px solid #2980b9;position:sticky;top:0;}

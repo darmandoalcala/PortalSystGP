@@ -2,13 +2,7 @@
 
 
 #disp-lateral-form {
-    background-color: #fcfcfc;
-    overflow: hidden;
-    padding: 30px;
-    width: 40%;
-    border-radius: 12px 0 0 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    height: auto;
+    background-color:#fcfcfc;overflow:hidden;padding:30px;width:40%;border-radius:12px 0 0 12px;box-shadow:0 4px 10px rgba(0,0,0,0.1);height:auto;
 }
 
 #disp-lateral-form img{max-width:100%;height:100%;object-fit:contain;}
@@ -19,16 +13,8 @@
 .registro-equipo textarea,
 .registro-equipo input[type="text"],
 .registro-equipo input[type="date"] {
-    width: 100%;
-    padding: 10px 15px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    background-color: #ffffff;
-    color: #333;
-    border-radius: 6px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
-    transition: border-color 0.3s;
+ width:100%;padding:10px 15px;margin-top:5px;border:1px solid #ccc;background-color:#ffffff;color:#333;
+ border-radius:6px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);box-sizing:border-box;transition:border-color 0.3s;
 }
 
 .registro-equipo select option{background-color:white !important;color:#333 !important;}
@@ -49,19 +35,10 @@
 .radio-opciones textarea{max-width:40%;}
 
 .guardar-equipo {
-    background-color: #00bf8f;
-    background: linear-gradient(to right, #00a87a, #008f65);
-    color: white;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: bold;
-    text-transform: uppercase;
-    width: 100%;
-    margin-top: 30px;
-    transition: background 0.3s, transform 0.1s;
+    background-color:#00bf8f;background:linear-gradient(to right,#00a87a,#008f65);color:white;padding:15px 20px;
+    border:none;border-radius:8px;cursor:pointer;font-size:1.1em;font-weight:bold;text-transform:uppercase;width:100%;
+    margin-top:30px;transition:background 0.3s,transform 0.1s;
 }
+
 
 .guardar-equipo:hover{filter:contrast(175%) brightness(103%);transform:translateY(-10px);}

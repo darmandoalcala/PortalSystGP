@@ -21,6 +21,7 @@
 .menu-container a[href*="buscar_equipo.html"]{background-color:#F39C12;}
 .menu-container a[href*="vista_inventario.html"]{background-color:#F1C40F;}
 .menu-container a[href*="vista_historial_incidentes.html"]{background-color:#f10fa9;}
+.menu-container a[href*="vista_usuarios.html"]{background-color:#a20ff1;}
 .menu-container a[href*="importar_csv.html"]{background-color:#3498DB;}
 .menu-container a[href*="exportar_csv.html"]{background-color:#E67E22;}
 #logout-button{justify-content:center;background-color:#e74c3c;border:none;cursor:pointer;}
