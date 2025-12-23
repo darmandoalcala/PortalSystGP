@@ -75,25 +75,45 @@ async function fetchAndRenderFromSupabase() {
 
 // Filtros de botones
 function filtrarUsuarios(tipo) {
+    const btnInventariados = document.getElementById('inventariados-button');
+    const btnSinInventariar = document.getElementById('sin-inventariar-button');
+    const btnFaltaLaptop = document.getElementById('falta-laptop-button'); 
     let filtrados = [];
+    
     if (tipo === 'inventariados') {
         filtrados = todosLosUsuarios.filter(u => u.inventario && u.inventario[0].count > 0);
-    } else {
+    } 
+    else if (tipo === 'sin') {
         filtrados = todosLosUsuarios.filter(u => !u.inventario || u.inventario[0].count === 0);
+    } 
+    else if (tipo === 'faltantes') {
+        filtrados = todosLosUsuarios.filter(u => 
+            u.TIENE_LAPTOP === true && (!u.inventario || u.inventario[0].count === 0)
+        );
     }
+    
     renderTableFromObjects(filtrados);
 }
 
 document.getElementById('inventariados-button').addEventListener('click', () => {
     document.getElementById('inventariados-button').disabled = true;
     document.getElementById('sin-inventariar-button').disabled = false;
+    document.getElementById('falta-inventariar-button').disabled = false;
     filtrarUsuarios('inventariados');
 });
 
 document.getElementById('sin-inventariar-button').addEventListener('click', () => {
     document.getElementById('inventariados-button').disabled = false;
     document.getElementById('sin-inventariar-button').disabled = true;
+    document.getElementById('falta-inventariar-button').disabled = false;
     filtrarUsuarios('sin');
 });
+
+document.getElementById('falta-inventariar-button').addEventListener('click', () => {
+    document.getElementById('inventariados-button').disabled = false;
+    document.getElementById('sin-inventariar-button').disabled = false;
+    document.getElementById('falta-inventariar-button').disabled = true;
+    filtrarUsuarios('faltantes');
+})
 
 window.onload = fetchAndRenderFromSupabase;
