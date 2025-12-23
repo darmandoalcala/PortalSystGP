@@ -8,6 +8,7 @@
 #modal-details-content{background-color:#f8f8f8;border:1px solid #eee;padding:10px;margin-top:10px;border-radius:4px;white-space:pre-wrap;}
 .modal-body p{margin-bottom:8px;font-size:0.95em;}
 .modal-general-info i{color:#7f8c8d;margin-right:8px;}
+.modal-input{width:100%;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:4px;box-sizing:border-box;}
 .modal-general-info.activo i{color:#2ecc71;}
 .modal-general-info.inactivo i{color:#c0392b;}
 /* ANIMACION ENTRADA */
@@ -28,3 +29,18 @@ to{opacity:1;transform:translateY(0);}
 /*IMAGEN*/
 .modal-2-image-horizontal{display:flex;justify-content:center;align-items:center;margin-bottom:20px;border-radius:6px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
 .modal-device-image{max-width:100%;max-height:180px;}
+
+/*FOOTER*/
+.modal-footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 columnas en PC */
+    gap: 10px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+@media (max-width: 600px) {
+    .modal-footer-grid {
+        grid-template-columns: 1fr;
+    }
+}

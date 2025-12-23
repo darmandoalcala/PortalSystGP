@@ -1,62 +1,34 @@
 <div id="itemModal" class="modal">
     <div class="modal-content">
         <span class="close-button" onclick="closeGlobalModal()">&times;</span>
+        
         <div id="modal-details">
-        <div class="modal-2-image-horizontal">
-            <div id="modal-image-container-device"></div>
-            <div id="modal-image-container-brand"></div>
-        </div>
-
+            <div class="modal-2-image-horizontal">
+                <div id="modal-image-container-device"></div>
+                <div id="modal-image-container-brand"></div>
+            </div>
             
             <h2 id="modal-title"></h2>
             <h3 id="modal-active"></h3>
             <h3 id="modal-subtitle"></h3>
+            
             <div class="modal-body">
-                <div class="modal-general-info">
-                    <p>
-                        <i class="fa-solid fa-user"></i> PERTENECE A: 
-                        <strong id="modal-user"></strong>
-                        DEL DEPARTAMENTO 
-                        <strong id="modal-dpto"></strong>.
-                    </p>
-                    <p>
-                        <i class="fa-solid fa-calendar-check"></i> FECHA DE COMPRA: 
-                        <strong id="modal-buy-date"></strong>
-                    </p>
-                    <p>
-                        <i class="fa-solid fa-clock-rotate-left"></i> COMPRADO HACE: 
-                        <strong id="modal-buy-days-ago"></strong>
-                    </p>
-                    <p>
-                        <i class="fa-solid fa-calendar-check"></i> FECHA DE INVENTARIADO: 
-                        <strong id="modal-date"></strong>
-                    </p>
-                    <p>
-                        <i class="fa-solid fa-clock-rotate-left"></i> INVENTARIADO HACE: 
-                        <strong id="modal-days-ago"></strong>
-                    </p>
-                    <hr>
-                    <h4><i class="fa-solid fa-circle-info"></i> DETALLES DEL ESTADO</h4>
-                    <p>
-                        FUNCIONA: <strong id="modal-funciona"></strong>
-                    </p>
-                </div>
-
-                <div id="modal-details-content"></div>
-
-                <div style="display: flex; justify-content: space-between; padding: 0 10%;">
-                    <div style="text-align: center; margin-top: 25px;">
-                        <button id="edit-equipo-button" class="action-button" style="background-color:#2ECC71;">
-                            <i class="fa-solid fa-pen-to-square"></i> EDITAR EQUIPO
-                        </button>
-                    </div>
-                    <div style="text-align: center; margin-top: 25px;">
-                        <button id="edit-equipo-button" class="action-button" style="background-color:#E67E22;">
-                            <i class="fa-solid fa-warning"></i><i class="fa-solid fa-plus"></i> AGREGAR DETALLE
-                        </button>
+                <div id="modal-dynamic-content">
+                    <div class="modal-general-info">
+                        <p><i class="fa-solid fa-user"></i> PERTENECE A: <strong id="modal-user"></strong> DEL DEPARTAMENTO <strong id="modal-dpto"></strong>.</p>
+                        <p><i class="fa-solid fa-calendar-check"></i> FECHA DE COMPRA: <strong id="modal-buy-date"></strong></p>
+                        <p><i class="fa-solid fa-clock-rotate-left"></i> COMPRADO HACE: <strong id="modal-buy-days-ago"></strong></p>
+                        <p><i class="fa-solid fa-calendar-check"></i> FECHA DE INVENTARIADO: <strong id="modal-date"></strong></p>
+                        <p><i class="fa-solid fa-clock-rotate-left"></i> INVENTARIADO HACE: <strong id="modal-days-ago"></strong></p>
+                        <hr>
+                        <h4><i class="fa-solid fa-circle-info"></i> DETALLES DEL ESTADO</h4>
+                        <p>FUNCIONA: <strong id="modal-funciona"></strong></p>
+                        <div id="modal-details-content" style="font-style: italic; margin-top: 10px; color: #555;"></div>
                     </div>
                 </div>
-                
+
+                <div id="modal-footer-actions" class="modal-footer-grid" style="margin-top: 25px;">
+                    </div>
             </div>
         </div>
     </div>
