@@ -249,9 +249,88 @@ async function saveQuickDetail() {
 }
 
 async function toggleActiveStatus() {
-    const nuevoEstado = !(String(currentItemData['ACTIVO']).toUpperCase() === 'TRUE');
-    const { error } = await supabaseClient.from('inventario').update({ "ACTIVO": nuevoEstado }).eq('NUMERO DE SERIE', currentItemData['NUMERO DE SERIE']);
-    if (!error) location.reload();
+    const esActivoActual = String(currentItemData['ACTIVO']).toUpperCase() === 'TRUE';
+    const hoy = new Date();
+    
+    // Formato manual para asegurar el DD/MM/YYYY
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const anio = hoy.getFullYear();
+    const fechaTexto = `${dia}/${mes}/${anio}`; 
+    const fechaISO = hoy.toISOString().split('T')[0];
+
+    // --- CASO 1: EL EQUIPO ESTÁ INACTIVO Y SE VA A REACTIVAR ---
+    // Reutilizamos el formulario de cambio de usuario
+    if (!esActivoActual) {
+        if (confirm("Para reactivar este equipo, primero debes asignar un nuevo dueño. ¿Deseas continuar?")) {
+            renderChangeUserForm(); // Reutiliza tu función existente
+            
+            // Modificamos temporalmente el botón de confirmar del formulario de reasignación
+            // para que también active el equipo al guardar.
+            setTimeout(() => {
+                const btnConfirm = document.querySelector('#modal-footer-actions button:last-child');
+                if (btnConfirm) {
+                    btnConfirm.onclick = async () => {
+                        const newId = document.getElementById('new-user-id').value;
+                        if (!newId) return alert("Selecciona un usuario.");
+                        
+                        const { error } = await supabaseClient.from('inventario').update({ 
+                            "id_usuario": newId,
+                            "ACTIVO": true,
+                            "FECHA REVISADO": fechaISO,
+                            "FUNCIONA": "SI" // Al reactivar se asume que ya está listo
+                        }).eq('NUMERO DE SERIE', currentItemData['NUMERO DE SERIE']);
+
+                        if (!error) {
+                            alert("Equipo reactivado y asignado con éxito.");
+                            location.reload();
+                        }
+                    };
+                }
+            }, 100);
+        }
+        return;
+    }
+
+    // --- CASO 2: EL EQUIPO ESTÁ ACTIVO Y SE VA A DAR DE BAJA ---
+    if (!confirm(`¡ADVERTENCIA! Vas a dar de BAJA este equipo.\n\n- Se asignará a 'SIN ASIGNAR'.\n- Se anotará 'BAJA EL ${fechaTexto}' en detalles.\n- Se actualizará la fecha de revisión.\n\n¿Proceder?`)) return;
+
+    let datosActualizar = { 
+        "ACTIVO": false,
+        "FECHA REVISADO": fechaISO 
+    };
+
+    try {
+        const { data: userBaja, error: userError } = await supabaseClient
+            .from('usuarios')
+            .select('id')
+            .eq('NOMBRE COMPLETO', 'SIN ASIGNAR')
+            .single();
+
+        if (userError || !userBaja) throw new Error("No se encontró el registro 'SIN ASIGNAR'.");
+
+        datosActualizar["id_usuario"] = userBaja.id;
+        datosActualizar["USUARIO"] = "SIN ASIGNAR";
+        
+        const detalleAnterior = (currentItemData.DETALLES || "").trim();
+        const separador = detalleAnterior ? " | " : "";
+        datosActualizar["DETALLES"] = `${detalleAnterior}${separador}BAJA EL ${fechaTexto}`.toUpperCase();
+        datosActualizar["FUNCIONA"] = "NO";
+        
+        const { error } = await supabaseClient
+            .from('inventario')
+            .update(datosActualizar)
+            .eq('NUMERO DE SERIE', currentItemData['NUMERO DE SERIE']);
+
+        if (!error) {
+            alert("Equipo dado de baja correctamente.");
+            location.reload();
+        } else {
+            throw error;
+        }
+    } catch (err) {
+        alert("Error: " + err.message);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
