@@ -5,7 +5,7 @@ const BRAND_IMAGES = {
 };
 
 let currentItemData = null;
-
+let currentInfoUsuario = null;
 function calculateDaysAgo(isoDateString) {
     if (!isoDateString || typeof isoDateString !== 'string') return 'SIN REGISTRO';
     const reviewDate = new Date(isoDateString);
@@ -33,6 +33,7 @@ function initializeGlobalModalListeners() {
 
 function showGlobalModal(data) {
     currentItemData = data;
+    currentInfoUsuario = data.usuarios || {};
     const modal = document.getElementById('itemModal');
     if (!modal) return;
 
@@ -58,7 +59,7 @@ function renderFixedHeader(data) {
 
 function renderDetailsView() {
     const data = currentItemData;
-    const infoUsuario = data.usuarios || {};
+    const infoUsuario = currentInfoUsuario;
     const dynamicContainer = document.getElementById('modal-dynamic-content') || document.querySelector('.modal-body');
 
     // 1. Inyectamos la estructura primero
@@ -351,9 +352,17 @@ function printResponsibilityLetter(data, idUsuario) {
         nombreFirmante = data.USUARIO || "________________________";
     }
 
-    const notaEstado = (data.DETALLES && data.DETALLES.trim() !== "") 
-        ? "El equipo se entrega en estado de segundo uso y en óptimas condiciones." 
-        : "El equipo se entrega en condiciones nuevas para su uso.";
+    const nombreUsuarioActual = data.usuarios ? data.usuarios["NOMBRE COMPLETO"] : data.USUARIO;
+    const tieneDetalles = data.DETALLES && data.DETALLES.trim() !== "";
+    const vieneDeAlguienReal = nombreUsuarioActual && nombreUsuarioActual.toUpperCase() !== "SIN ASIGNAR";
+
+    let notaEstado = "";
+
+    if (tieneDetalles || vieneDeAlguienReal) {
+        notaEstado = "El equipo se entrega en estado de segundo uso y en óptimas condiciones.";
+    } else {
+        notaEstado = "El equipo se entrega en condiciones nuevas para su uso.";
+    }
 
     printWindow.document.write(`
         <html>
