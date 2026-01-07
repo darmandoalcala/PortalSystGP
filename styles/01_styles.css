@@ -21,6 +21,8 @@ header h1{color:#2c3e50;font-size:2em;margin:0;}
 
 h1{color:#2c3e50;font-size:2em;margin:0;}
 
+h1 img{height:50px;vertical-align:middle;margin-right:10px; text-align: left;}
+
 #loadingMessage, #loading{text-align:center;padding:20px;color:#888;}
 
 footer{text-align:center;margin-top:40px;padding:10px;color:#7f8c8d;font-size:0.9em;}
