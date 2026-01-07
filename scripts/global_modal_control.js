@@ -9,7 +9,7 @@ let currentItemData = null;
 function calculateDaysAgo(isoDateString) {
     if (!isoDateString || typeof isoDateString !== 'string') return 'SIN REGISTRO';
     const reviewDate = new Date(isoDateString);
-    if (isNaN(reviewDate.getTime())) return 'FECHA INVÁLIDA'; 
+    if (isNaN(reviewDate.getTime())) return 'FECHA INVÁLIDA';
     const today = new Date();
     reviewDate.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
@@ -51,8 +51,8 @@ function renderFixedHeader(data) {
     document.getElementById('modal-subtitle').textContent = `S/N: ${data['NUMERO DE SERIE'] || 'N/A'}`;
 
     const modalActiveEl = document.getElementById('modal-active');
-    modalActiveEl.innerHTML = activo === 'TRUE' ? 
-        '<i class="fa-solid fa-circle-check activo-si-icon"> ACTIVO</i>' : 
+    modalActiveEl.innerHTML = activo === 'TRUE' ?
+        '<i class="fa-solid fa-circle-check activo-si-icon"> ACTIVO</i>' :
         '<i class="fa-solid fa-circle-xmark activo-no-icon"> INACTIVO</i>';
 }
 
@@ -60,7 +60,7 @@ function renderDetailsView() {
     const data = currentItemData;
     const infoUsuario = data.usuarios || {};
     const dynamicContainer = document.getElementById('modal-dynamic-content') || document.querySelector('.modal-body');
-    
+
     // 1. Inyectamos la estructura primero
     dynamicContainer.innerHTML = `
         <div class="modal-general-info">
@@ -97,7 +97,7 @@ function renderDetailsView() {
         { text: 'AGREGAR DETALLE', icon: 'fa-plus', color: '#E67E22', action: renderAddDetailForm },
         { text: 'CAMBIAR USUARIO', icon: 'fa-user-gear', color: '#3498DB', action: renderChangeUserForm },
         { text: 'ACTIVAR/DESACTIVAR', icon: 'fa-power-off', color: '#95A5A6', action: toggleActiveStatus },
-        { text: 'EDITAR TODO', icon: 'fa-pen-to-square', color: '#2ECC71', action: () => window.location.href=`editar_equipo.html?serial=${encodeURIComponent(data['NUMERO DE SERIE'])}` }
+        { text: 'EDITAR TODO', icon: 'fa-pen-to-square', color: '#2ECC71', action: () => window.location.href = `editar_equipo.html?serial=${encodeURIComponent(data['NUMERO DE SERIE'])}` }
     ];
 
     const footer = document.getElementById('modal-footer-actions');
@@ -195,6 +195,7 @@ async function saveNewUser() {
     const { error } = await supabaseClient.from('inventario').update({ "id_usuario": newId }).eq('NUMERO DE SERIE', currentItemData['NUMERO DE SERIE']);
     if (!error) {
         alert("Usuario actualizado con éxito.");
+        printResponsibilityLetter(currentItemData, newId);
         location.reload();
     }
 }
@@ -235,11 +236,11 @@ async function saveQuickDetail() {
     const funciona = document.getElementById('quick-funciona').value;
     const detalles = document.getElementById('quick-detalles').value.toUpperCase();
     const hoy = new Date().toISOString().split('T')[0];
-    
-    const { error } = await supabaseClient.from('inventario').update({ 
-        "FUNCIONA": funciona, 
-        "DETALLES": detalles, 
-        "FECHA REVISADO": hoy 
+
+    const { error } = await supabaseClient.from('inventario').update({
+        "FUNCIONA": funciona,
+        "DETALLES": detalles,
+        "FECHA REVISADO": hoy
     }).eq('NUMERO DE SERIE', currentItemData['NUMERO DE SERIE']);
 
     if (!error) {
@@ -251,38 +252,36 @@ async function saveQuickDetail() {
 async function toggleActiveStatus() {
     const esActivoActual = String(currentItemData['ACTIVO']).toUpperCase() === 'TRUE';
     const hoy = new Date();
-    
+
     // Formato manual para asegurar el DD/MM/YYYY
     const dia = String(hoy.getDate()).padStart(2, '0');
     const mes = String(hoy.getMonth() + 1).padStart(2, '0');
     const anio = hoy.getFullYear();
-    const fechaTexto = `${dia}/${mes}/${anio}`; 
+    const fechaTexto = `${dia}/${mes}/${anio}`;
     const fechaISO = hoy.toISOString().split('T')[0];
 
-    // --- CASO 1: EL EQUIPO ESTÁ INACTIVO Y SE VA A REACTIVAR ---
-    // Reutilizamos el formulario de cambio de usuario
     if (!esActivoActual) {
         if (confirm("Para reactivar este equipo, primero debes asignar un nuevo dueño. ¿Deseas continuar?")) {
-            renderChangeUserForm(); // Reutiliza tu función existente
-            
-            // Modificamos temporalmente el botón de confirmar del formulario de reasignación
-            // para que también active el equipo al guardar.
+            renderChangeUserForm();
+
+
             setTimeout(() => {
                 const btnConfirm = document.querySelector('#modal-footer-actions button:last-child');
                 if (btnConfirm) {
                     btnConfirm.onclick = async () => {
                         const newId = document.getElementById('new-user-id').value;
                         if (!newId) return alert("Selecciona un usuario.");
-                        
-                        const { error } = await supabaseClient.from('inventario').update({ 
+
+                        const { error } = await supabaseClient.from('inventario').update({
                             "id_usuario": newId,
                             "ACTIVO": true,
                             "FECHA REVISADO": fechaISO,
-                            "FUNCIONA": "SI" // Al reactivar se asume que ya está listo
+                            "FUNCIONA": "SI"
                         }).eq('NUMERO DE SERIE', currentItemData['NUMERO DE SERIE']);
 
                         if (!error) {
                             alert("Equipo reactivado y asignado con éxito.");
+                            printResponsibilityLetter(currentItemData, newId);
                             location.reload();
                         }
                     };
@@ -292,12 +291,11 @@ async function toggleActiveStatus() {
         return;
     }
 
-    // --- CASO 2: EL EQUIPO ESTÁ ACTIVO Y SE VA A DAR DE BAJA ---
     if (!confirm(`¡ADVERTENCIA! Vas a dar de BAJA este equipo.\n\n- Se asignará a 'SIN ASIGNAR'.\n- Se anotará 'BAJA EL ${fechaTexto}' en detalles.\n- Se actualizará la fecha de revisión.\n\n¿Proceder?`)) return;
 
-    let datosActualizar = { 
+    let datosActualizar = {
         "ACTIVO": false,
-        "FECHA REVISADO": fechaISO 
+        "FECHA REVISADO": fechaISO
     };
 
     try {
@@ -311,12 +309,12 @@ async function toggleActiveStatus() {
 
         datosActualizar["id_usuario"] = userBaja.id;
         datosActualizar["USUARIO"] = "SIN ASIGNAR";
-        
+
         const detalleAnterior = (currentItemData.DETALLES || "").trim();
         const separador = detalleAnterior ? " | " : "";
         datosActualizar["DETALLES"] = `${detalleAnterior}${separador}BAJA EL ${fechaTexto}`.toUpperCase();
         datosActualizar["FUNCIONA"] = "NO";
-        
+
         const { error } = await supabaseClient
             .from('inventario')
             .update(datosActualizar)
@@ -331,6 +329,111 @@ async function toggleActiveStatus() {
     } catch (err) {
         alert("Error: " + err.message);
     }
+}
+
+/**
+ * FUNCION PARA IMPRIMIR UNA CARTA RESPONSIVA
+ * @param {Object} data - Datos completos del equipo
+ * @param {Number|String} idUsuario - ID del nuevo usuario
+ */
+
+function printResponsibilityLetter(data, idUsuario) {
+    const printWindow = window.open('', '_blank');
+    const hoy = new Date();
+    const fechaLarga = hoy.toLocaleDateString('es-ES');
+
+    let nombreFirmante = "________________________";
+    const previewElement = document.getElementById('new-user-preview');
+    
+    if (previewElement && previewElement.textContent.includes("Seleccionado: ")) {
+        nombreFirmante = previewElement.textContent.replace("Seleccionado: ", "").trim();
+    } else {
+        nombreFirmante = data.USUARIO || "________________________";
+    }
+
+    const notaEstado = (data.DETALLES && data.DETALLES.trim() !== "") 
+        ? "El equipo se entrega en estado de segundo uso y en óptimas condiciones." 
+        : "El equipo se entrega en condiciones nuevas para su uso.";
+
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>CARTA RESPONSIVA - ${data.MARCA || 'EQUIPO'}</title>
+                <style>
+                    body { font-family: 'Helvetica', Arial, sans-serif; margin: 40px; color: #333; line-height: 1.4; }
+                    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+                    .logo { width: 120px; }
+                    h2 { text-align: center; font-size: 18px; text-decoration: underline; margin-bottom: 20px; }
+                    .content { text-align: justify; font-size: 11px; margin-bottom: 20px; }
+                    
+                    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 11px; }
+                    th, td { border: 1px solid black; padding: 8px; text-align: center; }
+                    th { background-color: #f2f2f2; text-transform: uppercase; }
+                    
+                    .note-section { margin-top: 20px; font-size: 11px; }
+                    .footer-sign { margin-top: 50px; text-align: center; font-size: 12px; }
+                    .signature-line { margin-top: 40px; border-top: 1px solid black; width: 300px; display: inline-block; }
+                    
+                    .manual-input { border-bottom: 1px solid #000; width: 350px; display: inline-block; height: 15px; vertical-align: bottom; }
+
+                    @media print {
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <img src="img/logo_gp.png" class="logo"> 
+                </div>
+
+                <h2>CARTA RESPONSIVA DE EQUIPOS</h2>
+
+                <div class="content">
+                    <p>Por medio de la presente hago constar que recibí de <strong>GP MOBILITY</strong> el (los) siguientes (s) equipo (s) para uso exclusivo del desempeño de mis “Actividades laborales”, comprometiéndome a mantenerlo conforme al estado de recepción. Entendiendo y aceptando que, en caso de cualquier daño ocasionado por “dolo o negligencia” me haré responsable de su reparación y/o reposición.</p>
+                    <p>En caso de que por causas inherentes al uso y desgaste normal del(los) equipo(s), el o los mismo(s) requieran cualquier reparación, es mi responsabilidad notificar a <strong>Cultura y Talento</strong>, vía correo electrónico (solicitando acuse de recepción), para que me notifique las condiciones de mantenimiento necesarias.</p>
+                    <p>Reconozco que el(los) equipo(s) asignado(s) a mi persona sólo podrá(n) ser utilizado(s) para cumplir con las tareas que se me encomienden por parte de la empresa: <strong>GP MOBILITY</strong>, en calidad de patrón y que “no” podré hacer uso para cuestiones de carácter personal. Me Comprometo a “no” modificar ni en el Hardware ni en el Software, es decir no agregar ni suprimir programa(s) o aplicación(es) de los que se encuentren cargados originalmente, sin previo consentimiento por escrito de <strong>Cultura y Talento</strong>.</p>
+                    <p>Reconozco que los derechos sobre el equipo objeto de la presente, corresponden exclusivamente a <strong>GP MOBILITY</strong>, en términos del contrato que se tiene celebrado con el proveedor de este y/o factura correspondiente. Por lo que a la simple solicitud de la empresa me comprometo a devolver el(los) equipo(s) asignado(s) indicando mi conformidad a la firma del presente y en todo caso, al terminar mi relación laboral con la empresa hare entrega al representante de Cultura y Talento o jefe inmediato, en el mismo estado en que lo haya recibido, salvo al deterioro normal por uso.</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 33%;">MARCA</th>
+                            <th style="width: 33%;">MODELO</th>
+                            <th style="width: 34%;">NUMERO DE SERIE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${data.MARCA || 'N/A'}</td>
+                            <td>${data.MODELO || 'N/A'}</td>
+                            <td>${data['NUMERO DE SERIE'] || 'N/A'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="note-section">
+                    <p><strong>NOTA:</strong> ${notaEstado}</p>
+                    <p><strong>ESPECIFICACIONES Y ACCESORIOS:</strong> <span class="manual-input"></span></p>
+                </div>
+
+                <div class="footer-sign">
+                    <p>Atentamente</p>
+                    <p style="margin-top: 40px;">Nombre Completo: <strong>${nombreFirmante}</strong></p>
+                    
+                    <div class="signature-line"></div>
+                    <p>Firma</p>
+                    
+                    <p style="margin-top: 20px;">Fecha: ${fechaLarga}</p>
+                </div>
+            </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.onload = function() {
+        printWindow.print();
+    };
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
