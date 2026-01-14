@@ -42,3 +42,18 @@
 
 
 .guardar-equipo:hover{filter:contrast(175%) brightness(103%);transform:translateY(-10px);}
+
+/* RESPONSIVE */
+@media screen and (max-width: 850px) {
+    .container{flex-direction:column;min-height:auto;padding:10px;}
+    #disp-lateral-form{width:100%;border-radius:12px 12px 0 0;padding:15px;text-align:center;}
+    #disp-lateral-form img{max-height:150px;}
+    .registro-equipo{width:100%;;padding:20px 15px;}
+    .grupo-horizontal{flex-direction:column;gap:10px;margin-bottom:0;}
+    .campo-individual{width:100%;margin-bottom:15px;}
+    .radio-group{min-width:100%;}
+    .radio-opciones{justify-content:space-around;background:#f9f9f9;padding:10px;border-radius:8px;}
+    .label-encabezado{font-size:1.1em;margin-top:10px;}
+    .guardar-equipo{margin-top:15px;padding:18px;}
+
+}
