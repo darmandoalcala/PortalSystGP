@@ -27,8 +27,18 @@ h1 img{height:50px;vertical-align:middle;margin-right:10px; text-align: left;}
 
 footer{text-align:center;margin-top:40px;padding:10px;color:#7f8c8d;font-size:0.9em;}
 
-@media screen and (max-width: 600px) {
-    header h1{font-size:1.2em;}
-    header p{font-size:0.8em;}
-
+@media screen and (max-width:768px){header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;padding:10px 20px;gap:10px;}
+#header-left-actions{width:auto;text-align:left;order:1;}
+#header-titles{width:auto;order:2;text-align:center;}
+#header-right-spacer{display:block;width:40px;/* Equilibra el ancho del botón de la izquierda */
+ order:3;}
+header h1{font-size:1.1em;display:inline-block;margin:0;}
+h1 img{height:30px;margin-right:5px;}
+#header-left-actions a{width:auto;padding:8px 12px;font-size:0.8em;}
+body{padding:10px;}
+}
+@media screen and (max-width:480px){header{padding:10px;grid-template-columns:40px 1fr 40px;}
+header h1{font-size:0.95em;}
+header p{display:none;}
+footer{font-size:0.7em;margin-top:20px;}
 }

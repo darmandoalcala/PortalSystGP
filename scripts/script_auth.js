@@ -1,6 +1,8 @@
 const SUPABASE_URL = 'https://oovzygalahromrinjffl.supabase.co'; 
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vdnp5Z2FsYWhyb21yaW5qZmZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2MzQwMzgsImV4cCI6MjA3OTIxMDAzOH0.crTTU0mxDvGJ2n2_MrQ43BTSBseYRbh7P5Prh5T98Wg';
 
+const EMAIL_AUTORIZADO = "culturaytalento@gpmobility.mx"; 
+
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const TABLA_INVENTARIO = 'inventario';
@@ -91,7 +93,6 @@ async function loadDashboardStats() {
             }
         }
 
-        // REGEX
         if (maxSucursalValue !== 'N/A') {
             const regex = /^[^/]*\//;
             maxSucursalValue = maxSucursalValue.replace(regex, '').trim();
@@ -117,7 +118,7 @@ async function loadDashboardStats() {
 }
 
 
-function handleAuthStatus(session) {
+async function handleAuthStatus(session) {
     const statElements = [
         document.getElementById('div2'),
         document.getElementById('div3'),
@@ -128,9 +129,29 @@ function handleAuthStatus(session) {
     ];
 
     if (session) {
+        const userEmail = session.user.email;
+
+        if (userEmail !== EMAIL_AUTORIZADO) {
+            console.warn(`Acceso denegado para: ${userEmail}`);
+            
+            await supabaseClient.auth.signOut();
+            
+            authError.textContent = 'ACCESO DENEGADO: No tienes permisos para ver este sitio.';
+            authError.style.color = '#e11d48'; 
+            authError.style.fontWeight = 'bold';
+            
+            loginSection.style.display = 'block';
+            mainMenu.style.display = 'none';
+            headerParagraph.textContent = 'INICIA SESIÓN PARA ACCEDER A LAS HERRAMIENTAS.';
+            statElements.forEach(div => { if (div) div.style.display = 'none'; });
+            
+            return; 
+        }
+
         loginSection.style.display = 'none';
         mainMenu.style.display = 'flex'; 
         headerParagraph.textContent = 'BIENVENIDO';
+        authError.textContent = ''; 
         
         statElements.forEach(div => { if (div) div.style.display = 'block'; });
         loadDashboardStats(); 
@@ -164,11 +185,12 @@ if (loginForm) {
 
             if (error) throw error;
             
-            handleAuthStatus(data.session);
+            await handleAuthStatus(data.session);
 
         } catch (error) {
             console.error('Error de autenticación:', error.message);
             authError.textContent = 'Error: Credenciales inválidas. Verifica tu correo y contraseña.';
+            authError.style.color = 'red';
         } finally {
             submitButton.disabled = false;
             submitButton.textContent = 'ACCEDER';
@@ -190,7 +212,7 @@ if (logoutButton) {
 
 async function checkSession() {
     const { data: { session } } = await supabaseClient.auth.getSession();
-    handleAuthStatus(session);
+    await handleAuthStatus(session);
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
         handleAuthStatus(session);
