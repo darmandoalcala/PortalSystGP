@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GP Mobility - Login</title>
+    <script src="scripts/auth_guard.js"></script>
+    <link rel="stylesheet" href="styles/01_styles.css">
+    <link rel="stylesheet" href="styles/new_index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            background-color: var(--color-bg-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        #login-section {
+            background-color: var(--color-bg-card-dark);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .login-logo {
+            font-size: 2rem;
+            color: var(--color-brand-purple);
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        #header-paragraph {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid #444;
+            background-color: #2a2a2a;
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--color-brand-purple);
+        }
+
+        #login-form button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--color-brand-purple);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+            margin-top: 10px;
+        }
+
+        #login-form button:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        #login-form button:disabled {
+            background-color: var(--color-text-muted);
+            cursor: not-allowed;
+        }
+
+        #auth-error {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            min-height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-section">
+        <span class="login-logo">GP MOBILITY</span>
+        <p id="header-paragraph">INICIA SESIÓN PARA ACCEDER</p>
+
+        <form id="login-form">
+            <div class="input-group">
+                <label for="email">CORREO ELECTRÓNICO</label>
+                <input type="email" id="email" placeholder="ejemplo@gpmobility.mx" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">CONTRASEÑA</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit">ACCEDER</button>
+        </form>
+
+        <div id="auth-error"></div>
+    </div>
+
+    <script src="scripts/script_auth.js"></script>
+</body>
+</html>

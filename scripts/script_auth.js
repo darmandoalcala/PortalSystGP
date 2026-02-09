@@ -8,23 +8,21 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const TABLA_INVENTARIO = 'inventario';
 const TABLA_USUARIOS = 'usuarios';
 
-// Referencias del DOM actualizadas al nuevo diseño Bento
 const loginForm = document.getElementById('login-form');
 const logoutButton = document.getElementById('logout-button');
 const loginSection = document.getElementById('login-section'); 
-const mainMenu = document.querySelector('.parent'); // El contenedor Grid completo
+const mainMenu = document.querySelector('.parent'); 
 const headerParagraph = document.getElementById('header-paragraph');
 const authError = document.getElementById('auth-error');
 
-// Mapeo de estadísticas a las nuevas celdas de colores
 const statDivs = {
-    totalEquipos: document.querySelector('.div8'),    // Gris claro
-    laptops: document.querySelector('.div16'),        // Degradado azul
-    monitores: document.querySelector('.div15'),      // Púrpura translúcido
-    sucursalMax: document.querySelector('.div9'),     // Gris oscuro
-    detallesRevisar: document.querySelector('.div10'),// Gris sutil
-    inactivos: document.querySelector('.div7')        // Negro (borde naranja)
-};
+    totalEquipos: document.querySelector('.div8'),    
+    laptops: document.querySelector('.div16'),        
+    monitores: document.querySelector('.div15'),      
+    sucursalMax: document.querySelector('.div9'),     
+    detallesRevisar: document.querySelector('.div10'),
+    inactivos: document.querySelector('.div7')        
+}
 
 function updateStatDiv(divElement, value, description) {
     if (divElement) {
@@ -88,20 +86,38 @@ async function loadDashboardStats() {
 }
 
 async function handleAuthStatus(session) {
+    const loginSection = document.getElementById('login-section');
+    const mainMenu = document.querySelector('.parent');
+
     if (session) {
-        if (session.user.email !== EMAIL_AUTORIZADO) {
+        const userEmail = session.user.email;
+
+        if (userEmail !== EMAIL_AUTORIZADO) {
             await supabaseClient.auth.signOut();
-            authError.textContent = 'ACCESO DENEGADO';
-            authError.style.color = '#ff5e3a'; // Usando tu variable naranja de estado
+            if (authError) authError.textContent = 'ACCESO DENEGADO';
             return;
         }
 
-        if(loginSection) loginSection.style.display = 'none';
-        if(mainMenu) mainMenu.style.display = 'grid'; 
-        loadDashboardStats(); 
+        if (window.location.pathname.includes('login.html')) {
+            window.location.href = 'new_index.html';
+            return;
+        }
+
+        if (loginSection) loginSection.style.display = 'none';
+        if (mainMenu) mainMenu.style.display = 'grid'; 
+        
+        if (document.querySelector('.stat-value')) {
+            loadDashboardStats(); 
+        }
+
     } else {
-        if(loginSection) loginSection.style.display = 'block';
-        if(mainMenu) mainMenu.style.display = 'none'; 
+        if (!window.location.pathname.includes('login.html') && !window.location.pathname.endsWith('/')) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        if (loginSection) loginSection.style.display = 'block';
+        if (mainMenu) mainMenu.style.display = 'none';
     }
 }
 
