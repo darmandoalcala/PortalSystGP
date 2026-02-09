@@ -8,82 +8,59 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const TABLA_INVENTARIO = 'inventario';
 const TABLA_USUARIOS = 'usuarios';
 
+// Referencias del DOM actualizadas al nuevo diseño Bento
 const loginForm = document.getElementById('login-form');
 const logoutButton = document.getElementById('logout-button');
-const loginSection = document.getElementById('login-section');
-const mainMenu = document.getElementById('main-menu');
+const loginSection = document.getElementById('login-section'); 
+const mainMenu = document.querySelector('.parent'); // El contenedor Grid completo
 const headerParagraph = document.getElementById('header-paragraph');
 const authError = document.getElementById('auth-error');
 
+// Mapeo de estadísticas a las nuevas celdas de colores
 const statDivs = {
-    totalEquipos: document.getElementById('div2'),
-    laptops: document.getElementById('div3'),
-    monitores: document.getElementById('div4'),
-    sucursalMax: document.getElementById('div6'),
-    detallesRevisar: document.getElementById('div7'),
-    inactivos: document.getElementById('div8')
+    totalEquipos: document.querySelector('.div8'),    // Gris claro
+    laptops: document.querySelector('.div16'),        // Degradado azul
+    monitores: document.querySelector('.div15'),      // Púrpura translúcido
+    sucursalMax: document.querySelector('.div9'),     // Gris oscuro
+    detallesRevisar: document.querySelector('.div10'),// Gris sutil
+    inactivos: document.querySelector('.div7')        // Negro (borde naranja)
 };
 
 function updateStatDiv(divElement, value, description) {
     if (divElement) {
         const valueSpan = divElement.querySelector('.stat-value');
         const descSpan = divElement.querySelector('.stat-description');
-        
         if (valueSpan) valueSpan.textContent = value;
         if (descSpan) descSpan.textContent = description;
     }
 }
 
 async function loadDashboardStats() {
-    
+    // Spinner de carga inicial en las tarjetas de datos
     for (const key in statDivs) {
-        if (statDivs[key]) {
+        if (statDivs[key] && statDivs[key].querySelector('.stat-value')) {
             statDivs[key].querySelector('.stat-value').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
         }
     }
 
     try {
-        const [
-            totalCountPromise,
-            laptopsCountPromise,
-            monitoresCountPromise,
-            inactivosCountPromise,
-            detallesCountPromise,
-            maxSucursalDataPromise
-        ] = [
+        // Consultas paralelas para optimizar velocidad
+        const [total, laptops, monitores, inactivos, detalles, sucursales] = await Promise.all([
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }),
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('DISP', 'LAPTOP'),
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('DISP', 'MONITOR'),
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('ACTIVO', false),
             supabaseClient.from(TABLA_INVENTARIO).select('*', { count: 'exact', head: true }).eq('FUNCIONA', 'DETALLE'),
             supabaseClient.from(TABLA_USUARIOS).select('LUGAR_DPTO').not('LUGAR_DPTO', 'is', null) 
-        ];
-
-        const results = await Promise.all([
-            totalCountPromise,
-            laptopsCountPromise,
-            monitoresCountPromise,
-            inactivosCountPromise,
-            detallesCountPromise,
-            maxSucursalDataPromise
         ]);
 
-        const total = results[0].count || 0;
-        const laptops = results[1].count || 0;
-        const monitores = results[2].count || 0;
-        const inactivos = results[3].count || 0;
-        const detalles = results[4].count || 0;
-        const sucursalesData = results[5].data; 
-
         let maxSucursalValue = 'N/A';
-        
-        if (sucursalesData && sucursalesData.length > 0) {
-            const counts = sucursalesData.reduce((acc, item) => {
+        if (sucursales.data && sucursales.data.length > 0) {
+            const counts = sucursales.data.reduce((acc, item) => {
                 const dpto = item.LUGAR_DPTO;
                 acc[dpto] = (acc[dpto] || 0) + 1;
                 return acc;
             }, {});
-
             let maxCount = 0;
             for (const dpto in counts) {
                 if (counts[dpto] > maxCount) {
@@ -94,129 +71,75 @@ async function loadDashboardStats() {
         }
 
         if (maxSucursalValue !== 'N/A') {
-            const regex = /^[^/]*\//;
-            maxSucursalValue = maxSucursalValue.replace(regex, '').trim();
+            maxSucursalValue = maxSucursalValue.replace(/^[^/]*\//, '').trim();
         }
 
-        updateStatDiv(statDivs.totalEquipos, total, 'EQUIPOS REGISTRADOS');
-        updateStatDiv(statDivs.laptops, laptops, 'LAPTOPS');
-        updateStatDiv(statDivs.monitores, monitores, 'MONITORES');
-        updateStatDiv(statDivs.detallesRevisar, detalles, 'DETALLES POR REVISAR');
-        updateStatDiv(statDivs.inactivos, inactivos, 'EQUIPOS INACTIVOS');
-        
-        updateStatDiv(statDivs.sucursalMax, maxSucursalValue, 'ES EL DEPARTAMENTO CON MÁS EQUIPOS');
-
+        // Inyección de datos con etiquetas cortas para el diseño Bento
+        updateStatDiv(statDivs.totalEquipos, total.count || 0, 'REGISTRADOS');
+        updateStatDiv(statDivs.laptops, laptops.count || 0, 'LAPTOPS');
+        updateStatDiv(statDivs.monitores, monitores.count || 0, 'MONITORES');
+        updateStatDiv(statDivs.detallesRevisar, detalles.count || 0, 'POR REVISAR');
+        updateStatDiv(statDivs.inactivos, inactivos.count || 0, 'INACTIVOS');
+        updateStatDiv(statDivs.sucursalMax, maxSucursalValue, 'MAYOR DEPTO');
 
     } catch (e) {
-        console.error("Error al cargar las estadísticas del dashboard:", e);
-        for (const key in statDivs) {
-            if (statDivs[key]) {
-                statDivs[key].querySelector('.stat-value').innerHTML = 'Error';
-            }
-        }
+        console.error("Error Dashboard:", e);
     }
 }
-
 
 async function handleAuthStatus(session) {
-    const statElements = [
-        document.getElementById('div2'),
-        document.getElementById('div3'),
-        document.getElementById('div4'),
-        document.getElementById('div6'),
-        document.getElementById('div7'),
-        document.getElementById('div8')
-    ];
-
     if (session) {
-        const userEmail = session.user.email;
-
-        if (userEmail !== EMAIL_AUTORIZADO) {
-            console.warn(`Acceso denegado para: ${userEmail}`);
-            
+        if (session.user.email !== EMAIL_AUTORIZADO) {
             await supabaseClient.auth.signOut();
-            
-            authError.textContent = 'ACCESO DENEGADO: No tienes permisos para ver este sitio.';
-            authError.style.color = '#e11d48'; 
-            authError.style.fontWeight = 'bold';
-            
-            loginSection.style.display = 'block';
-            mainMenu.style.display = 'none';
-            headerParagraph.textContent = 'INICIA SESIÓN PARA ACCEDER A LAS HERRAMIENTAS.';
-            statElements.forEach(div => { if (div) div.style.display = 'none'; });
-            
-            return; 
+            authError.textContent = 'ACCESO DENEGADO';
+            authError.style.color = '#ff5e3a'; // Usando tu variable naranja de estado
+            return;
         }
 
-        loginSection.style.display = 'none';
-        mainMenu.style.display = 'flex'; 
-        headerParagraph.textContent = 'BIENVENIDO';
-        authError.textContent = ''; 
-        
-        statElements.forEach(div => { if (div) div.style.display = 'block'; });
+        if(loginSection) loginSection.style.display = 'none';
+        if(mainMenu) mainMenu.style.display = 'grid'; 
         loadDashboardStats(); 
-
     } else {
-        loginSection.style.display = 'block';
-        mainMenu.style.display = 'none';
-        headerParagraph.textContent = 'INICIA SESIÓN PARA ACCEDER A LAS HERRAMIENTAS.';
-        
-        statElements.forEach(div => { if (div) div.style.display = 'none'; });
+        if(loginSection) loginSection.style.display = 'block';
+        if(mainMenu) mainMenu.style.display = 'none'; 
     }
 }
 
+// Listeners de Formulario
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        authError.textContent = '';
-        
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        const btn = loginForm.querySelector('button');
         
-        const submitButton = loginForm.querySelector('button');
-        submitButton.disabled = true;
-        submitButton.textContent = 'ACCEDIENDO...';
+        btn.disabled = true;
+        btn.textContent = 'ACCEDIENDO...';
 
         try {
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password,
-            });
-
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
             if (error) throw error;
-            
             await handleAuthStatus(data.session);
-
         } catch (error) {
-            console.error('Error de autenticación:', error.message);
-            authError.textContent = 'Error: Credenciales inválidas. Verifica tu correo y contraseña.';
-            authError.style.color = 'red';
+            authError.textContent = 'Credenciales inválidas.';
         } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'ACCEDER';
+            btn.disabled = false;
+            btn.textContent = 'ACCEDER';
         }
     });
 }
 
 if (logoutButton) {
     logoutButton.addEventListener('click', async () => {
-        const { error } = await supabaseClient.auth.signOut();
-        if (error) {
-            console.error('Error al cerrar sesión:', error.message);
-        } else {
-            handleAuthStatus(null);
-        }
+        await supabaseClient.auth.signOut();
+        handleAuthStatus(null);
     });
 }
-
 
 async function checkSession() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     await handleAuthStatus(session);
-
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-        handleAuthStatus(session);
-    });
+    supabaseClient.auth.onAuthStateChange((_event, session) => handleAuthStatus(session));
 }
 
 window.onload = checkSession;

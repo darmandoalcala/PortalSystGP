@@ -1,0 +1,112 @@
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GP Mobility - Menú Principal</title>
+            <link rel="stylesheet" href="styles/01_styles.css"> 
+        <link rel="stylesheet" href="styles/new_index.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    </head>
+    <body>
+        <div class="parent">
+            <div class="div1"> 
+                <h1>GP MOBILITY</h1>
+            </div>
+
+            <div class="div2"> 
+                <a href="agregar_equipo.html" class="menu-option">
+                    <i class="fa-solid fa-plus-circle fa-2x"></i>
+                    <span>AGREGAR EQUIPO</span>
+                </a>
+            </div>
+
+            <div class="div3"> 
+                <a href="vista_inventario.html" class="menu-option">
+                    <i class="fa-solid fa-boxes-stacked fa-2x"></i>
+                    <span>VER INVENTARIO</span>
+                </a>
+            </div>
+
+            <div class="div4"> 
+                <a href="buscar_equipo.html" class="menu-option">
+                    <i class="fa-solid fa-magnifying-glass fa-2x"></i>
+                    <span>BUSCAR EQUIPO</span>
+                </a>
+            </div>
+
+            <div class="div5"> 
+                <a href="vista_historial_incidentes.html" class="menu-option">
+                    <i class="fa-solid fa-clipboard-list fa-2x"></i>
+                    <span>HISTORIAL DETALLES</span>
+                </a>
+            </div>
+
+            <div class="div6"> 
+                <a href="vista_usuarios.html" class="menu-option">
+                    <i class="fa-solid fa-users-gear fa-2x"></i>
+                    <span>VER USUARIOS</span>
+                </a>
+            </div>
+
+            <div class="div7"> 
+                <span class="stat-value" id="stats-inactivos">N/A</span>
+                <span class="stat-description">INACTIVOS</span>
+            </div>
+
+            <div class="div8"> 
+                <span class="stat-value" id="stats-total">N/A</span>
+                <span class="stat-description">REGISTRADOS</span>
+            </div>
+
+            <div class="div9"> 
+                <span class="stat-value" id="stats-depto">N/A</span>
+                <span class="stat-description">MAYOR DEPTO</span>
+            </div>
+
+            <div class="div10"> 
+                <span class="stat-value" id="stats-pendientes">N/A</span>
+                <span class="stat-description">POR REVISAR</span>
+            </div>
+
+            <div class="div11"> 
+                <a href="exportar_csv.html" class="menu-option">
+                    <i class="fa-solid fa-file-export"></i>
+                    <span>EXPORTAR</span>
+                </a>
+            </div>
+
+            <div class="div12"> 
+                <a href="importar_csv.html" class="menu-option">
+                    <i class="fa-solid fa-file-import"></i>
+                    <span>IMPORTAR</span>
+                </a>
+            </div>
+
+            <div class="div13"> 
+                <span class="stat-description">POWERED BY DIEGO AGUAYO<br/> DATABASE: SUPABASE</span>
+            </div>
+
+            <div class="div14"> 
+                <button id="logout-button" class="menu-option">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span>SALIR</span>
+                </button>
+            </div>
+
+            <div class="div15"> 
+                <span class="stat-value" id="stats-monitores">N/A</span>
+                <span class="stat-description">MONITORES</span>
+            </div>
+
+            <div class="div16"> 
+                <span class="stat-value" id="stats-laptops">N/A</span>
+                <span class="stat-description">LAPTOPS</span>
+            </div>
+        </div>
+        <script src="scripts/script_auth.js"></script>
+        <script src="scripts/script_index.js"></script>
+    </body>
+</html>

@@ -1,0 +1,132 @@
+:root {
+    --color-brand-purple: #5b46e0;     
+    --color-brand-yellow: #f8e14b;     
+    --color-brand-blue-dark: #2c358e;  
+    --color-status-orange: #ff5e3a;    
+    --color-status-navy: #0e1235;      
+    --color-accent-sky: #8493ff; 
+    --color-bg-main: #121212;          
+    --color-bg-card-light: #f0f0f0;    
+    --color-bg-card-dark: #1e1e1e;     
+    --color-border-subtle: #d1d1d1;    
+    --color-text-primary: #ffffff;     
+    --color-text-secondary: #0e1235;   
+    --color-text-muted: #6b6b6b;       
+    --color-shadow-light: rgba(0, 0, 0, 0.1);
+    --color-overlay-purple: rgba(91, 70, 224, 0.15);
+    --color-graph-gradient: #3a47ff;   
+}
+
+body {
+    background-color: var(--color-bg-main);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--color-text-primary);
+    overflow: hidden;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 12px;
+    width: 95vw;
+    height: 95vh;
+}
+
+.parent div {
+    border-radius: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.parent div:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px var(--color-shadow-light);
+    z-index: 10;
+}
+
+.menu-option {
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1em;
+    font-weight: 700;
+    gap: 10px;
+}
+
+h1 {
+    font-size: 1.2rem;
+    margin: 0;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.stat-description {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.div1 { grid-area: 1 / 1 / 2 / 2; background-color: var(--color-brand-purple); }
+.div2 { grid-area: 1 / 2 / 2 / 5; background-color: var(--color-brand-yellow); color: var(--color-text-secondary); }
+.div3 { grid-area: 2 / 1 / 4 / 3; background-color: var(--color-brand-blue-dark); }
+.div4 { grid-area: 2 / 3 / 3 / 5; background-color: var(--color-status-orange); }
+.div5 { grid-area: 3 / 3 / 5 / 4; background-color: var(--color-status-navy); }
+.div6 { grid-area: 3 / 4 / 5 / 5; background-color: var(--color-accent-sky); color: var(--color-text-secondary); }
+.div7 { grid-area: 4 / 1 / 5 / 2; background-color: var(--color-bg-main); border: 1px solid #333; color: var(--color-status-orange); }
+.div8 { grid-area: 4 / 2 / 5 / 3; background-color: var(--color-bg-card-light); color: var(--color-text-secondary); }
+.div9 { grid-area: 1 / 5 / 3 / 6; background-color: var(--color-bg-card-dark); border: 1px solid #333; }
+.div10 { grid-area: 3 / 5 / 4 / 6; background-color: var(--color-border-subtle); color: var(--color-text-secondary); }
+.div11 { grid-area: 5 / 2 / 6 / 3; background-color: var(--color-text-primary); color: var(--color-text-secondary); }
+.div12 { grid-area: 5 / 1 / 6 / 2; background-color: var(--color-text-secondary); }
+.div13 { grid-area: 4 / 5 / 5 / 6; background-color: var(--color-text-muted); font-size: 0.6rem; }
+.div14 { grid-area: 5 / 5 / 6 / 6; background-color: var(--color-shadow-light); border: 1px solid #444; }
+.div15 { grid-area: 5 / 3 / 6 / 4; background-color: var(--color-overlay-purple); border: 1px solid var(--color-brand-purple); }
+.div16 { grid-area: 5 / 4 / 6 / 5; background-color: var(--color-graph-gradient); }
+
+#logout-button {
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .parent {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+        overflow-y: auto;
+        height: auto;
+        padding: 20px 0;
+    }
+    .parent div {
+        grid-area: auto !important;
+        min-height: 150px;
+    }
+}
