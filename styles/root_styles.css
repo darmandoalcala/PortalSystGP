@@ -6,12 +6,20 @@
     --color-brand-red: #cc3c2c;
 
     --color-status-orange: #ff5e3a;
+    --color-status-dark-orange: #a7371e;
     --color-status-navy: #0e1235;
+    --color-status-dark-green: #123123;
+    --color-status-dark-yellow: #313012;
+    --color-status-dark-red: #311212;
 
     --color-accent-sky: #8493ff;
+    --color-accent-light-green: #b0ffc3;
+    --color-accent-light-yellow: #faffb0;
+    --color-accent-light-red: #ffb0b0;
 
     --color-bg-main: #121212;
     --color-bg-card-light: #f0f0f0;
+    --color-bg-card-medium: #2a2a2a;
     --color-bg-card-dark: #1e1e1e;
 
     --color-border-subtle: #d1d1d1;
@@ -21,8 +29,10 @@
     --color-text-muted: #6b6b6b;
 
     --color-shadow-light: rgba(0, 0, 0, 0.1);
-    --color-overlay-purple: rgba(91, 70, 224, 0.15);
-    --color-graph-gradient: #3a47ff;   
+    --color-overlay-purple: rgba(243, 71, 28, 0.15);
+    --color-overlay-orange: rgba(224, 144, 70, 0.15);
+    --color-graph-gradient: #3a47ff;
+
 }
 
 /* --- Estilos Generales --- */
@@ -37,6 +47,8 @@ header h1{color:var(--color-text-primary);font-size:1.8em;margin:0;}
 header p{color:var(--color-text-muted);margin:5px 0 0 0;font-size:0.9em;}
 h1 img{height:50px;vertical-align:middle;margin-right:10px;text-align:left;}
 footer{text-align:center;margin-top:40px;padding:10px;color:#7f8c8d;font-size:0.9em;}
+button:hover{transform:translateY(-5px);box-shadow:0 10px 20px var(--color-shadow-light);z-index:10;}
+
 
 @media screen and (max-width:768px){
     body{overflow-y:auto !important;overflow-x:hidden;height:auto !important;display:block;}

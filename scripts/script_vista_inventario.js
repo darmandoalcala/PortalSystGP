@@ -95,47 +95,47 @@ function renderTableFromObjects(data) {
 }
 
 async function fetchAndRenderFromSupabase() {
-    const loadingDiv = document.getElementById('loading');
-    loadingDiv.style.display = 'block';
+        const loadingDiv = document.getElementById('loading');
+        loadingDiv.style.display = 'block';
 
-    const { data: { session } } = await supabaseClient.auth.getSession();
+        const { data: { session } } = await supabaseClient.auth.getSession();
 
-    if (!session) {
-        loadingDiv.innerHTML = '<i class="fa-solid fa-lock"></i> Acceso denegado. Redirigiendo...';
-        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-        return;
-    }
-
-    try {
-        const { data, error } = await supabaseClient
-            .from('inventario')
-            .select(`
-                *,
-                usuarios (
-                    "NOMBRE COMPLETO",
-                    "LUGAR_DPTO"
-                )
-            `)
-            .order('id', { ascending: true });
-
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-            loadingDiv.innerHTML = '<i class="fa-solid fa-face-frown"></i> No hay datos en el inventario.';
-            return;
+        if (!session) {
+                loadingDiv.innerHTML = '<i class="fa-solid fa-lock"></i> Acceso denegado. Redirigiendo...';
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+                return;
         }
 
-        // Guardamos los datos completos y reiniciamos a la página 1
-        fullInventoryData = data;
-        currentPage = 1;
-        updateTablePagination();
+        try {
+                const { data, error } = await supabaseClient
+                        .from('inventario')
+                        .select(`
+                                *,
+                                usuarios (
+                                        "NOMBRE COMPLETO",
+                                        "LUGAR_DPTO"
+                                )
+                        `)
+                        .order('id', { ascending: true });
 
-    } catch (error) {
-        console.error('Error al leer de Supabase:', error.message);
-        loadingDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error al cargar: ${error.message}`;
-    } finally {
-        loadingDiv.style.display = 'none';
-    }
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                        loadingDiv.innerHTML = '<i class="fa-solid fa-face-frown"></i> No hay datos en el inventario.';
+                        return;
+                }
+
+                // Guardamos los datos completos y reiniciamos a la página 1
+                fullInventoryData = data;
+                currentPage = 1;
+                updateTablePagination();
+
+        } catch (error) {
+                console.error('Error al leer de Supabase:', error.message);
+                loadingDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error al cargar: ${error.message}`;
+        } finally {
+                loadingDiv.style.display = 'none';
+        }
 }
 
 function updateTablePagination() {

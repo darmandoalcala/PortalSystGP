@@ -76,7 +76,7 @@ function renderDetailsView() {
             <p>DETALLES: <em id="modal-detalles-text"></em></p>
             <hr>
             <h4><i class="fa-solid fa-clock-rotate-left"></i> HISTORIAL DE DUEÑOS</h4>
-            <div id="history-list" style="font-size: 0.85em; max-height: 120px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 5px;">
+            <div id="history-list" style="font-size: 0.85em; max-height: 120px; overflow-y: auto; ; padding: 10px; border-radius: 5px;">
                 Cargando historial...
             </div>
         </div>
@@ -95,10 +95,10 @@ function renderDetailsView() {
 
     // 3. Render de botones
     const buttons = [
-        { text: 'AGREGAR DETALLE', icon: 'fa-plus', color: '#E67E22', action: renderAddDetailForm },
-        { text: 'CAMBIAR USUARIO', icon: 'fa-user-gear', color: '#3498DB', action: renderChangeUserForm },
-        { text: 'ACTIVAR/DESACTIVAR', icon: 'fa-power-off', color: '#95A5A6', action: toggleActiveStatus },
-        { text: 'EDITAR TODO', icon: 'fa-pen-to-square', color: '#2ECC71', action: () => window.location.href = `editar_equipo.html?serial=${encodeURIComponent(data['NUMERO DE SERIE'])}` }
+        { text: 'AGREGAR DETALLE', icon: 'fa-plus', color: 'var(--color-brand-purple)', action: renderAddDetailForm },
+        { text: 'CAMBIAR USUARIO', icon: 'fa-user-gear', color: 'var(--color-brand-blue-dark)', action: renderChangeUserForm },
+        { text: 'ACTIVAR/DESACTIVAR', icon: 'fa-power-off', color: 'var(--color-brand-red)', action: toggleActiveStatus },
+        { text: 'EDITAR TODO', icon: 'fa-pen-to-square', color: 'var(--color-brand-green)', action: () => window.location.href = `editar_equipo.html?serial=${encodeURIComponent(data['NUMERO DE SERIE'])}` }
     ];
 
     const footer = document.getElementById('modal-footer-actions');
@@ -146,7 +146,7 @@ function renderChangeUserForm() {
             <h4 style="color:#3498DB;"><i class="fa-solid fa-user-plus"></i> REASIGNAR EQUIPO</h4>
             <label>BUSCAR NUEVO DUEÑO:</label>
             <input type="text" id="modal-user-search" class="modal-input" placeholder="Escribe nombre..." style="width:100%; padding:8px; margin-top:5px; box-sizing: border-box;">
-            <ul id="modal-user-results" style="display:none; position:absolute; background:white; border:1px solid #ccc; width:100%; z-index:100; list-style:none; padding:0; margin:0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></ul>
+            <ul id="modal-user-results" style="display:none; position:absolute; background:var(--color-bg-card-dark); border:1px solid #ccc; width:100%; z-index:100; list-style:none; padding:0; margin:0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></ul>
             <input type="hidden" id="new-user-id">
             <p id="new-user-preview" style="margin-top:10px; font-weight:bold; color:#2C3E50;"></p>
         </div>
@@ -170,13 +170,13 @@ function renderChangeUserForm() {
     const footer = document.getElementById('modal-footer-actions');
     const btnCancel = document.createElement('button');
     btnCancel.className = 'action-button';
-    btnCancel.style.cssText = "background-color:#95A5A6; color:white; padding:10px; border:none; border-radius:5px;";
+    btnCancel.style.cssText = "background-color: var(--color-brand-red); color:white; padding:10px; border:none; border-radius:5px;";
     btnCancel.innerHTML = '<i class="fa-solid fa-xmark"></i> CANCELAR';
     btnCancel.onclick = renderDetailsView;
 
     const btnConfirm = document.createElement('button');
     btnConfirm.className = 'action-button';
-    btnConfirm.style.cssText = "background-color:#3498DB; color:white; padding:10px; border:none; border-radius:5px;";
+    btnConfirm.style.cssText = "background-color: var(--color-brand-green); color:white; padding:10px; border:none; border-radius:5px;";
     btnConfirm.innerHTML = '<i class="fa-solid fa-check"></i> CONFIRMAR';
     btnConfirm.onclick = saveNewUser;
 
@@ -220,12 +220,14 @@ function renderAddDetailForm() {
 
     const footer = document.getElementById('modal-footer-actions');
     const btnCancel = document.createElement('button');
-    btnCancel.style.cssText = "background-color:#95A5A6; color:white; padding:10px; border:none; border-radius:5px;";
+    btnCancel.className = 'action-button';
+    btnCancel.style.cssText = "background-color: var(--color-brand-red); color:white; padding:10px; border:none; border-radius:5px;";
     btnCancel.innerHTML = '<i class="fa-solid fa-xmark"></i> CANCELAR';
     btnCancel.onclick = renderDetailsView;
 
     const btnSave = document.createElement('button');
-    btnSave.style.cssText = "background-color:#E67E22; color:white; padding:10px; border:none; border-radius:5px;";
+    btnSave.className = 'action-button';
+    btnSave.style.cssText = "background-color: var(--color-brand-green); color:white; padding:10px; border:none; border-radius:5px;";
     btnSave.innerHTML = '<i class="fa-solid fa-save"></i> GUARDAR';
     btnSave.onclick = saveQuickDetail;
 
@@ -377,7 +379,7 @@ function printResponsibilityLetter(data, idUsuario) {
                     
                     table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 11px; }
                     th, td { border: 1px solid black; padding: 8px; text-align: center; }
-                    th { background-color: #f2f2f2; text-transform: uppercase; }
+                    th { background-color: var(--color-bg-card-dark); text-transform: uppercase; }
                     
                     .note-section { margin-top: 20px; font-size: 11px; }
                     .footer-sign { margin-top: 50px; text-align: center; font-size: 12px; }

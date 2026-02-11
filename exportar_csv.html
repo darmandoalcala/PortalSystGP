@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GP Mobility - Exportar CSV</title>
     <script src="scripts/auth_guard.js"></script>
-    <link rel="stylesheet" href="styles/01_styles.css"> 
-    <link rel="stylesheet" href="styles/style_vista_inventario.css">
-    <link rel="stylesheet" href="styles/modal.css">
+    <link rel="stylesheet" href="styles/root_styles.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -22,8 +20,7 @@
             min-height: 50vh; /* Altura */
             text-align: center;
             padding: 40px 20px;
-            background-color: var(--color-bg-module);
-            border: 1px solid var(--color-border);
+            background-color: var(--color-bg-card-dark);
             border-radius: 16px;
             box-shadow: 0 4px 10px var(--color-shadow-light);
             max-width: 600px;
@@ -33,8 +30,8 @@
         
         
         #exportButton {
-            background-color: var(--color-func-export, #3fa331); 
-            color: white;
+            background-color: var(--color-brand-green); 
+            color: var(--color-text-primary);
             border: none;
             padding: 15px 30px;
             border-radius: 10px;
@@ -46,36 +43,19 @@
         }
         
         #record-count{font-size:3em;font-weight:700;color:var(--color-text-dark);margin-bottom:5px;}
-        #count-description{font-size:1.2em;color:var(--color-text-secondary);margin-bottom:30px;}
-        #exportButton:hover{filter:contrast(175%) brightness(103%);transform:translateY(-15px);}
+        #count-description{font-size:1.2em;color:var(--color-text-muted);margin-bottom:30px;}
 
     </style>
 </head>
 <body>
 
-    <header>
-        <div id="header-left-actions">
-            <a href="index.html" 
-                id="back-to-menu-btn" 
-                style="font-size: 1em;">
-                <i class="fa-solid fa-arrow-left"></i> 
-            </a>
-        </div>
+    <div id="header"></div>
 
-        <div id="header-titles">
-            <h1>EXPORTAR EN CSV</h1>
-            <p>DESCARGA UNA COPIA DE LA BASE DE DATOS EN FORMATO CSV</p>
-        </div>
-        
-        <div id="header-right-spacer">
-        </div>
-    </header>
-
-    <main>
+    <main>
         <div class="export-container">
             <div id="loading">
-                <i class="fa-solid fa-spinner fa-spin"></i> CONECTANDO CON EL SERVIDOR...
-            </div>
+                <i class="fa-solid fa-spinner fa-spin"></i> CONECTANDO CON EL SERVIDOR...
+            </div>
             
             <span id="record-count">0</span>
             <span id="count-description">REGISTROS DISPONIBLES PARA DESCARGAR.</span>
@@ -85,12 +65,14 @@
             </button>
             <p id="export-message"></p>
         </div>
-    </main>
-    
-    <footer>
-        <p>BY @DARMANDOALCALA. DATABASE POWERED BY SUPABASE</p>
-    </footer>
+    </main>
 
-    <script src="scripts/script_exportar_csv.js"></script>
+    <footer id="footer"></footer>
+
+    <script src="includes/component.js"></script>
+    <script>
+        renderLayout("EXPORTAR INVENTARIO A CSV", "DESCARGA EL INVENTARIO EN FORMATO COMMA SEPARATED VALUES.");
+    </script>
+    <script src="scripts/script_exportar_csv.js"></script>
 </body>
 </html>
