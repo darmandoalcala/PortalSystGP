@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GP Mobility - Vista Inventario</title>
     <script src="scripts/auth_guard.js"></script>
-    <link rel="stylesheet" href="styles/01_styles.css">
+    <link rel="stylesheet" href="styles/root_styles.css">
     <link rel="stylesheet" href="styles/style_vista_inventario.css">
     <link rel="stylesheet" href="styles/modal.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -14,53 +14,37 @@
 </head>
 <body>
 
-    <header>
-        <div id="header-left-actions">
-            <a href="index.html" 
-                id="back-to-menu-btn" 
-                style="font-size: 1em;">
-                <i class="fa-solid fa-arrow-left"></i> 
-            </a>
-        </div>
+    <div id="header"></div>
 
-        <div id="header-titles">
-            <h1>INVENTARIO DE EQUIPOS</h1>
-            <p>VISTA DE SOLO LECTURA Y EN TIEMPO REAL</p>
-        </div>
-        
-        <div id="header-right-spacer">
-        </div>
-    </header>
-
-    <main>
+    <main>
         <div class="action-bar">
             <a href="agregar_equipo.html" id="nuevo-equipo-button" 
-            style="display: inline-block; background-color: #27AE60; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 1em; cursor: pointer; text-decoration: none;">
+            style="display: inline-block; background-color: var(--color-brand-green); color: var(--color-text-primary); border: none; padding: 10px 20px; border-radius: 8px; font-size: 1em; cursor: pointer; text-decoration: none;">
                 <i class="fa-solid fa-plus"></i> AGREGAR NUEVO EQUIPO
             </a>
         </div>
         <div class="pagination-controls" style="text-align: center; margin-bottom: 15px;">
-            <button id="prevPage" class="action-button" style="background-color: #7f8c8d;"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
+            <button id="prevPage" class="action-button" style="background-color: var(--color-status-navy);"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
             <span id="pageInfo" style="margin: 0 15px; font-weight: bold;">Mostrando 1 - 50</span>
-            <button id="nextPage" class="action-button" style="background-color: #3498db;">Siguiente <i class="fa-solid fa-chevron-right"></i></button>
+            <button id="nextPage" class="action-button" style="background-color: var(--color-brand-blue-dark);">Siguiente <i class="fa-solid fa-chevron-right"></i></button>
         </div>
-        <div class="table-container">
-            <div id="loading">
-                <i class="fa-solid fa-spinner fa-spin"></i> CARGANDO DATOS...
-            </div>
-            <table id="inventoryTable">
-                <thead></thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </main>
-    
-        
-    <footer>
-        <p>BY @DARMANDOALCALA. DATABASE POWERED BY SUPABASE</p>
-    </footer>
+        <div class="table-container">
+            <div id="loading">
+                <i class="fa-solid fa-spinner fa-spin"></i> CARGANDO DATOS...
+            </div>
+            <table id="inventoryTable">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </main>
 
-    <script src="scripts/script_vista_inventario.js"></script>
-    
+    <footer id="footer"></footer>
+
+    <script src="includes/component.js"></script>
+    <script>
+        renderLayout("VISTA DE INVENTARIO","VISTA EN TIEMPO REAL DE TODOS LOS EQUIPOS.");
+    </script>
+    <script src="scripts/script_vista_inventario.js"></script>
 </body>
 </html>

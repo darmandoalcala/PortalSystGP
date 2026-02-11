@@ -8,8 +8,14 @@
     --color-status-orange: #ff5e3a;
     --color-status-dark-orange: #a7371e;
     --color-status-navy: #0e1235;
+    --color-status-dark-green: #123123;
+    --color-status-dark-yellow: #313012;
+    --color-status-dark-red: #311212;
 
     --color-accent-sky: #8493ff;
+    --color-accent-light-green: #b0ffc3;
+    --color-accent-light-yellow: #faffb0;
+    --color-accent-light-red: #ffb0b0;
 
     --color-bg-main: #121212;
     --color-bg-card-light: #f0f0f0;
@@ -25,7 +31,8 @@
     --color-shadow-light: rgba(0, 0, 0, 0.1);
     --color-overlay-purple: rgba(243, 71, 28, 0.15);
     --color-overlay-orange: rgba(224, 144, 70, 0.15);
-    --color-graph-gradient: #3a47ff;   
+    --color-graph-gradient: #3a47ff;
+
 }
 
 /* --- Estilos Generales --- */
