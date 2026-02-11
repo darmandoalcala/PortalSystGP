@@ -1,10 +1,19 @@
-#search-input-area{text-align:center;margin-bottom:30px;}
-#searchInput{padding:10px;width:300px;border:1px solid #ccc;border-radius:4px;font-size:1em;margin-right:10px;}
-#searchButton{padding:10px 20px;background-color:#3498db;color:white;border:none;border-radius:4px;cursor:pointer;transition:background-color 0.3s;}
-#searchButton:hover{background-color:#2980b9;}
-h2{width: 100%; text-align: center;}
-#inventoryTable {width:80%;margin:20px auto;border-collapse:collapse;font-size:1.1em;box-shadow:0 4px 8px rgba(0,0,0,0.1);}
-#inventoryTable  th{background-color:#ecf0f1;color:#2c3e50;padding:12px;text-align:left;border-bottom:2px solid #bdc3c7;}
-#inventoryTable  td{padding:10px;border-bottom:1px solid #eee;}
-#inventoryTable  tbody tr:nth-child(even){background-color:#f9f9f9;}
-#inventoryTable  tbody tr:hover{background-color:#e6f7ff;cursor:pointer;}
+
+#search-input-area{text-align:center;margin-bottom:30px;padding:20px;background-color:var(--color-bg-card-dark);border-radius:15px;display:flex;justify-content:center;align-items:center;gap:10px;}
+#searchInput{padding:12px;width:350px;background-color:var(--color-bg-main);border:1px solid var(--color-status-orange);
+border-radius:10px;font-size:1em;color:var(--color-text-primary);outline:none;transition:border-color 0.3s;}
+#searchInput:focus{border-color:var(--color-accent-sky);}
+#searchButton{padding:12px 25px;background-color:var(--color-status-orange);color:var(--color-text-primary);border:none;border-radius:10px;cursor:pointer;font-weight:bold;transition:filter 0.2s,transform 0.2s;}
+
+h2{width:100%;text-align:center;color:var(--color-text-primary);margin-top:20px;}
+#inventoryTable{width:90%;
+margin:20px auto;border-collapse:separate;
+border-spacing:0;font-size:1em;background-color:var(--color-bg-card-dark);border-radius:15px;overflow:hidden;box-shadow:0 8px 16px var(--color-shadow-light);}
+#inventoryTable th{background-color:var(--color-status-dark-orange);
+color:var(--color-text-primary);padding:15px;text-align:left;border-bottom:2px solid var(--color-status-orange);text-transform:uppercase;font-size:0.85em;letter-spacing:1px;}
+#inventoryTable td{padding:12px 15px;border-bottom:1px solid #2a2a2a;color:var(--color-text-primary);}
+#inventoryTable tbody tr:nth-child(even){background-color:rgba(255,255,255,0.03);}
+#inventoryTable tbody tr:hover{background-color:var(--color-overlay-orange);cursor:pointer;transition:background-color 0.2s;}
+@media screen and (max-width:768px){#inventoryTable{width:100%;font-size:0.9em;}
+#searchInput{width:200px;}
+}

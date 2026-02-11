@@ -99,7 +99,7 @@ async function handleAuthStatus(session) {
         }
 
         if (window.location.pathname.includes('login.html')) {
-            window.location.href = 'new_index.html';
+            window.location.href = 'index.html';
             return;
         }
 

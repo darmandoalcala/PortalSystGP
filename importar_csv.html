@@ -5,54 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GP Mobility - Importar CSV</title>
     <script src="scripts/auth_guard.js"></script>
-    <link rel="stylesheet" href="styles/01_styles.css"> 
+    <link rel="stylesheet" href="styles/root_styles.css"> 
     <link rel="stylesheet" href="styles/style_vista_inventario.css">
-    <link rel="stylesheet" href="styles/modal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style>
+    .access-denied-container{
+        text-align:center;background-color:var(--color-bg-card-dark);padding:50px;border-radius:24px;
+        border:1px solid var(--color-status-orange);box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    }
+    .btn-regresar{
+        display:inline-block;margin-top:20px;padding:12px 25px;background-color:var(--color-brand-purple);
+        color:white;text-decoration:none;border-radius:12px;font-weight:bold;transition:transform 0.2s;
+        border: none; cursor: pointer;
+    }
+    </style>
+
 </head>
 <body>
-
-    <header>
-        <div id="header-left-actions">
-            <a href="index.html" 
-                id="back-to-menu-btn" 
-                style="font-size: 1em;">
-                <i class="fa-solid fa-arrow-left"></i> 
-            </a>
+    <div id="header"></div> <main style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+        <div class="access-denied-container">
+            <i class="fa-solid fa-lock fa-4x" style="color: var(--color-status-orange); margin-bottom: 20px;"></i>
+            <h2 style="color: var(--color-text-primary);">ACCESO RESTRINGIDO</h2>
+            <p style="color: var(--color-text-muted); max-width: 400px; margin: 0 auto;">
+                Esta funcionalidad ha sido desactivada temporalmente por el administrador. 
+                Si necesitas importar datos masivos, contacta al equipo de TI.
+            </p>
+            <br>
+            <button href="index.html" class="btn-regresar">VOLVER AL MENÚ</button>
         </div>
-
-        <div id="header-titles">
-            <h1>VISUALIZADOR CSV</h1>
-        <p>
-            SELECCIONA UN ARCHIVO CSV Y LUEGO HAZ CLIC EN "CARGAR TABLA". HAZ CLIC EN CUALQUIER FILA PARA VER LOS DETALLES.
-            <br/>HAZ CLIC EN "SUBIR TABLA A BASE DE DATOS" PARA ACTUALIZAR LA TABLA EN NUESTRA BD DE SUPABASE.
-        </p>
-        </div>
-        
-        <div id="header-right-spacer"></div>
-    </header>
-
-    <main>
-        <section class="csv-upload">
-            <input type="file" id="csvFile" accept=".csv">
-            <button id="loadButton" disabled>CARGAR TABLA</button>
-            <button id="uploadButton" disabled>SUBIR TABLA A BASE DE DATOS</button>
-        </section>
-
-        <section class="table-container">
-            <table id="inventoryTable">
-                <thead></thead>
-                <tbody></tbody>
-            </table>
-        </section>
     </main>
     
-    <footer>
-        <p>BY @DARMANDOALCALA. DATABASE POWERED BY SUPABASE</p>
-    </footer>
-
-    <script src="scripts/script_importar_csv.js"></script>
+    <footer id="footer"></footer>
+    
+    <script src="includes/component.js"></script>
+    <script>
+        // Mantenemos el componente para que el header se vea profesional
+        renderLayout("IMPORTAR CSV", "ESTA FUNCIÓN NO ESTÁ DISPONIBLE");
+    </script>
 </body>
 </html>
