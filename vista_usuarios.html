@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GP Mobility - Vista Usuarios</title>
     <script src="scripts/auth_guard.js"></script>
-    <link rel="stylesheet" href="styles/01_styles.css">
+    <link rel="stylesheet" href="styles/root_styles.css">
     <link rel="stylesheet" href="styles/style_vista_usuarios.css">
     <link rel="stylesheet" href="styles/modal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -15,32 +15,16 @@
 </head>
 
 <body>
-
-        <header>
-        <div id="header-left-actions">
-            <a href="index.html" id="back-to-menu-btn" style="font-size: 1em;">
-                <i class="fa-solid fa-arrow-left"></i>
-            </a>
-        </div>
-
-        <div id="header-titles">
-            <h1>USUARIOS REGISTRADOS</h1>
-            <p>VISTA DE SOLO LECTURA Y EN TIEMPO REAL</p>
-        </div>
-
-        <div id="header-right-spacer">
-        </div>
-    </header>
-
+    <div id="header"></div>
     <main>
         <div class="buttons-group">
-            <button id="inventariados-button" style="background-color: #3db119;">
+            <button id="inventariados-button" style="background-color: var(--color-brand-green);">
                 <i class="fa-solid fa-person"></i> LAPTOPS INVENTARIADAS
             </button>
-            <button id="sin-laptop-button" style="background-color: #e62222;">
+            <button id="sin-laptop-button" style="background-color: var(--color-brand-red);">
                 <i class="fa-solid fa-person"></i> USUARIOS SIN LAPTOP
             </button>
-            <button id="falta-inventariar-button" style="background-color: #ffa200;">
+            <button id="falta-inventariar-button" style="background-color: var(--color-status-orange);">
                 <i class="fa-solid fa-laptop-code"></i> LAPTOPS FALTANTES
             </button>
         </div>
@@ -66,11 +50,12 @@
         </div>
     </main>
 
-    <footer>
-        <p>BY @DARMANDOALCALA. DATABASE POWERED BY SUPABASE</p>
-    </footer>
+    <footer id="footer"></footer>
 
-
+    <script src="includes/component.js"></script>
+    <script>
+        renderLayout("VISTA DE USUARIOS","VISTA EN TIEMPO REAL DE TODOS LOS USUARIOS.");
+    </script>
     <script src="scripts/script_vista_usuarios.js"></script>
 </body>
 </html>
